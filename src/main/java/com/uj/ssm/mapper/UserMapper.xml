@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uj.ssm.mapper.UserMapper" >
+  
+  <insert id="insert" parameterType="com.uj.ssm.pojo.User" >
+    insert into USER (username, userpwd,registerDate,lateLoginDate,privileges,email,
+      qq, nickname)
+    values (#{username,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{registerDate,jdbcType=VARCHAR},
+    #{registerDate,jdbcType=VARCHAR},'0',#{email,jdbcType=VARCHAR},
+      #{qq,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="login" parameterType="com.uj.ssm.pojo.User" resultType="com.uj.ssm.pojo.User" >
+    select * from USER where username = #{username} and userpwd = #{password}
+  </select>
+  <select id="findUser" parameterType="com.uj.ssm.pojo.User" resultType="com.uj.ssm.pojo.User" >
+    select * from USER where username = #{username}
+  </select>
+  <update id="updateLoginDate" parameterType="com.uj.ssm.pojo.User" >
+    update USER set lateLoginDate = #{loginDate} where username = #{username} and userpwd = #{password}
+  </update>
+  <update id="updateUserInfo" parameterType="com.uj.ssm.pojo.User" >
+    update USER set email = #{email},qq = #{qq},nickname = #{nickname} where username = #{username}
+  </update>
+</mapper>

@@ -1,0 +1,23 @@
+body{
+    background-image: url("../../assets/demo-1-bg.jpg");
+    background-size: cover;
+}
+.mx-auto {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+#preview{
+    margin-bottom: 25px;
+}
+.user-info{
+    width: 50%;
+}
+.user-info-panel{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.nickname-input{
+    margin-bottom: 10px;
+}
