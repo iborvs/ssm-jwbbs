@@ -22,6 +22,10 @@ public class CommServicelmpl implements CommService {
         List<Comm>lst = commMapper.CommRead(topicid);
         return lst;
     }
+    public List<Comm> GetTenComm(String owner){
+        List<Comm>lst = commMapper.GetTenComm(owner);
+        return lst;
+    }
     //private TopicMapper topicMapper;
 
 }

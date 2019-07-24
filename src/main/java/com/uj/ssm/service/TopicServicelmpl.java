@@ -30,4 +30,9 @@ public class TopicServicelmpl implements TopicService {
         List<Topic> lst = topicMapper.TopicReadAll();
         return lst;
     }
+    public String TopicGetName(int topicid){
+        String topicname = topicMapper.TopicGetName(topicid);
+        return topicname;
+    }
+
 }

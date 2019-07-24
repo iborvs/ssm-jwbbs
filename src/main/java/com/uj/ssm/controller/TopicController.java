@@ -1,7 +1,5 @@
 package com.uj.ssm.controller;
 
-
-import com.google.gson.Gson;
 import com.uj.ssm.pojo.User;
 import com.uj.ssm.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,4 +75,27 @@ public class TopicController {
         writer.println("]");
         System.out.println("]");
     }
+    @RequestMapping(value = {"/TopicGetName.action"})
+    public void TopicGetName(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        String topicidStr = request.getParameter("topicid");
+        int topicid = 0;
+        if(topicidStr == null || topicidStr.equals("")) {
+            topicid = 0;
+        } else {
+            topicid = Integer.parseInt(topicidStr);
+        }
+
+        String topicname = topicService.TopicGetName(topicid);
+        writer.print("[{ \"topicname\" : \"");
+        System.out.print("[{ \"topicname\" : \"");
+        writer.print(topicname);
+        System.out.print(topicname);
+        writer.println("\"}]");
+        System.out.println("\"}]");
+    }
+    //topicid-->topicname;
+    //owner-->10comments
+
 }

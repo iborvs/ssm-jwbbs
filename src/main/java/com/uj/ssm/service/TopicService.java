@@ -7,4 +7,5 @@ public interface TopicService {
     public int TopicKeep(Topic topic);
     public Topic TopicRead(Topic topic);
     public List<Topic> TopicReadAll();
+    public String TopicGetName(int topicid);
 }
