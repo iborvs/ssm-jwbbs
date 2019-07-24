@@ -1,0 +1,23 @@
+package com.uj.ssm.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.uj.ssm.mapper.TopicMapper;
+import com.uj.ssm.pojo.Comm;
+import com.uj.ssm.mapper.CommMapper;
+import com.uj.ssm.pojo.Topic;
+@Service
+
+public class CommServicelmpl implements CommService {
+    @Autowired
+    private CommMapper commMapper;
+    public int CommCreate(Comm comm){
+        int state = commMapper.CommCreate(comm);
+        System.out.println("yes sir to Commcreate");
+        return state;
+    }
+    //private TopicMapper topicMapper;
+
+}

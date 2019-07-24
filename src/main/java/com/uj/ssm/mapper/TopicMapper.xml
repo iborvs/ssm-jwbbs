@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uj.ssm.mapper.TopicMapper" >
+
+  <insert id="TopicCreate" parameterType="com.uj.ssm.pojo.Topic" >
+    insert into Topic (topicname, owner, starttime, lasttime, comments)
+    values (#{topicname,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, #{starttime,jdbcType=VARCHAR},
+      #{lasttime,jdbcType=VARCHAR}, #{comments})
+  </insert>
+  <update id="TopicKeep" parameterType="com.uj.ssm.pojo.Topic" >
+  update Topic SET lasttime = #{lasttime}, comments = comments + 1 where topicid = #{topicid};
+  </update>
+</mapper>
