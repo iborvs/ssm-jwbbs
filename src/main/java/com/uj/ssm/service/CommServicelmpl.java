@@ -26,6 +26,10 @@ public class CommServicelmpl implements CommService {
         List<Comm>lst = commMapper.GetTenComm(owner);
         return lst;
     }
+    public int CommDelete(int commentid){
+        int state = commMapper.CommDelete(commentid);
+        return state;
+    }
     //private TopicMapper topicMapper;
 
 }

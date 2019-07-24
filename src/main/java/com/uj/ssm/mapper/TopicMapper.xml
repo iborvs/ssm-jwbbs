@@ -19,4 +19,7 @@
   <select id="TopicGetName" parameterType="int" resultType="string" >
     select topicname from Topic where topicid = #{topicid}
   </select>
+  <delete id="TopicDelete" parameterType="int" >
+    delete from Topic where topicid = #{topicid}
+  </delete>
 </mapper>
