@@ -73,8 +73,11 @@ public class CommController {
         writer.println("[");
         System.out.println("[");
         for(int i = 0; i < len; i++){
-
             Comm ans = lst.get(i);
+            if(i != 0) {
+                System.out.print(", ");
+                writer.print(", ");
+            }
             System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
         }
@@ -96,11 +99,27 @@ public class CommController {
             Comm ans = lst.get(i);
             int topicid = ans.getTopicid();
             String topicname = topicService.TopicGetName(topicid);
+            if(i != 0) {
+                System.out.print(", ");
+                writer.print(", ");
+            }
             System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
         }
         writer.println("]");
         System.out.println("]");
     }
-    //GetTenComm
+    @RequestMapping(value = {"/CommDelete.action"})
+    public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        String commentidStr = request.getParameter("commentid");
+        int commentid = 0;
+        if(commentidStr == null || commentidStr.equals("")) {
+            commentid = 0;
+        } else {
+            commentid = Integer.parseInt(commentidStr);
+        }
+        commService.CommDelete(commentid);
+    }
 }

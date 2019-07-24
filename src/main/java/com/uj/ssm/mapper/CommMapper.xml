@@ -12,4 +12,7 @@
   <select id="GetTenComm" parameterType="String" resultType="com.uj.ssm.pojo.Comm" >
     select * from comments where owner = #{owner}
   </select>
+  <delete id="CommDelete" parameterType="int" >
+    delete from comments where commentid = #{commentid}
+  </delete>
 </mapper>

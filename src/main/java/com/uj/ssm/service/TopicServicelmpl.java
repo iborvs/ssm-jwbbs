@@ -34,5 +34,9 @@ public class TopicServicelmpl implements TopicService {
         String topicname = topicMapper.TopicGetName(topicid);
         return topicname;
     }
+    public int TopicDelete(int topicid){
+        int state = topicMapper.TopicDelete(topicid);
+        return state;
+    }
 
 }

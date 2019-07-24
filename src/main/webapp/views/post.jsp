@@ -12,6 +12,6 @@
 <script type="text/javascript">
 	function fuck(){
 		//$.post("../action/UsrRegister", { username: "John", password: "2pmasdasd",email:"smjiba@qq.com",qq:"123123123" } );
-		$.post("../GetTenComm.action", {owner: "dccc"});
+		$.post("../TopicDelete.action", {topicid: "1"});
 	}
 </script>

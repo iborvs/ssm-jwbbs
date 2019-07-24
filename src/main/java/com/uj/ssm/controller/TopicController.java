@@ -69,6 +69,10 @@ public class TopicController {
         System.out.println("[");
         for(int i = 0; i < len; i++){
             Topic ans = lst.get(i);
+            if(i != 0) {
+                System.out.print(", ");
+                writer.print(", ");
+            }
             System.out.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }");
             writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }");
         }
@@ -95,7 +99,17 @@ public class TopicController {
         writer.println("\"}]");
         System.out.println("\"}]");
     }
-    //topicid-->topicname;
-    //owner-->10comments
-
+    @RequestMapping(value = {"/TopicDelete.action"})
+    public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        String topicidStr = request.getParameter("topicid");
+        int topicid = 0;
+        if(topicidStr == null || topicidStr.equals("")) {
+            topicid = 0;
+        } else {
+            topicid = Integer.parseInt(topicidStr);
+        }
+        topicService.TopicDelete(topicid);
+    }
 }

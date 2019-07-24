@@ -10,4 +10,5 @@ public interface TopicMapper {
     public Topic TopicRead(Topic topic);
     public List<Topic> TopicReadAll();
     public String TopicGetName(int topicid);
+    public int TopicDelete(int topicid);
 }
