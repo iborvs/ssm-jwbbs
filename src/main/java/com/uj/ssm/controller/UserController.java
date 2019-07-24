@@ -189,16 +189,23 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
 		User login_user=new User();
-		if(session.getAttribute("login_user")!=null){
-			login_user.setUsername(session.getAttribute("login_user").toString());
-			login_user = userService.userFind(login_user);
-			writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" }]");
-		}
-		else if(user!=""){
+		if(user!=""){
 			login_user.setUsername(user);
 			login_user = userService.userFind(login_user);
-			if(login_user.getUsername()!=null)
-				writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" }]");
+			if(login_user.getUsername()!=null){
+				if(session.getAttribute("login_user")!=null){
+					if(session.getAttribute("login_user").toString().equals(login_user.getUsername())){
+						writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
+					}
+				}
+				else
+					writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"0\"}]");
+			}
+		}
+		else if(session.getAttribute("login_user")!=null){
+			login_user.setUsername(session.getAttribute("login_user").toString());
+			login_user = userService.userFind(login_user);
+			writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
 		}
 		writer.close();
 	}

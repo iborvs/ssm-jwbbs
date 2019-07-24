@@ -27,7 +27,7 @@
             height: 200px;
         }
         #hr_line{
-            height: auto;
+            height: 10px;
         }
     </style>
 </head>
@@ -43,7 +43,7 @@
                                 <% long date = new Date().getTime(); request.setAttribute("date", date); %>
                                 <form method="POST" enctype="multipart/form-data" id="uploadFrm">
                                     <div class="mx-auto">
-                                        <div id="preview"><img id="avatarPreview" class="avatar" src=""/></div>
+                                        <div id="preview"><img id="avatarPreview" class="avatar" src="../../assets/mmm.png"/></div>
                                     </div>
                                 </form>
                                 <form action="/user" method="POST" enctype="application/x-www-form-urlencoded" id="userinfo-form">
@@ -57,13 +57,21 @@
                                         <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
                                             <label for="email">email:</label>  <span id="email"></span>
                                         </div>
+                                        <div class="mx-auto" id="editInfoArea" style="display: none">
+                                            <a class="btn btn-success" name="submit" type="button" value="修改信息" href="/userInfo.views" />
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                <hr>
+                            </div>
+                        </div>
                         <div class="user-info-panel">
-                            <ul class="nav nav-list" id="hr_line"><li class="divider"></li></ul>
                             <h4>最近发帖:</h4>
+                            <div id = "comments_box">
                             <div class="div_item">
                                 <div class="div_item2 panel panel-default">
                                     <div class="panel-heading">
@@ -79,6 +87,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,12 +97,14 @@
 </div>
 <script>
     getInfo();
+    getUserComments();
+
     function pageReload() {
         location.reload();
     }
-    function getInfo(){
+    function getUserComments(){
         $.get(
-            '${pageContext.request.contextPath}/getuserinfo.action',
+            '${pageContext.request.contextPath}/GetTenComm.action',
             'user='+GetQueryString("user"),
             function(response,status,xhr){
                 if(response!=null){
@@ -101,10 +112,25 @@
                         response=response.replace(/[\r\n]/g,"");
                         response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
-                        $("#nickname").html(json[0].nickname);
-                        $("#qq").html(json[0].qq);
-                        $("#email").html(json[0].email);
-                        $("#avatarPreview").attr("src","../../avatar.views?user="+json[0].username+"&date=${date}");
+                        for (var i = 0; i < json.length; i++) {
+                            var comments = "<div class=\"div_item\">" +
+                                "                                <div class=\"div_item2 panel panel-default\">" +
+                                "                                    <div class=\"panel-heading\">" +
+                                "                                        <span>回复:</span>" +
+                                "                                        <a src=\""+  json[i].topicid +"\">"+json[i].topicname+"</a>" +
+                                "                                        <div style=\"float: right\">" +
+                                "                                            <span>回复于:</span>" +
+                                "                                            <span>"+ json[i].lasttime +"</span>" +
+                                    "                                        <span>"+
+                                "                                        </div>" +
+                                "                                    </div>" +
+                                "                                    <div class=\"panel-body\">" +
+                                json[i].content +
+                                "                                    </div>" +
+                                "                                </div>" +
+                                "                            </div>";
+                            $("#comments_box").append(comments);
+                        }
                     }
                     else {
                         alert("获取数据失败，请检查网络");
@@ -118,6 +144,31 @@
         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
         var r = window.location.search.substr(1).match(reg);
         if(r!=null)return  unescape(r[2]); return null;
+    }
+    function getInfo() {
+        $.get(
+            '${pageContext.request.contextPath}/getuserinfo.action',
+            'user='+GetQueryString("user"),
+            function(response,status,xhr){
+                if(response!=null){
+                    if( true ){
+                        response = response.replace(/[\r\n]/g,"");
+                        response = response.replace(/\s*/g,"");
+                        var json=$.parseJSON(response);
+                        $("#nickname").html(json[0].nickname);
+                        $("#qq").html(json[0].qq);
+                        $("#email").html(json[0].email);
+                        $("#avatarPreview").attr("src","../../avatar.views?user="+json[0].username+"&date=${date}");
+                        if(json[0].self=="1"){
+                            $("#editInfoArea").show();
+                        }
+                    }
+                    else {
+                        alert("获取数据失败，请检查网络");
+                    }
+                }
+            }
+        );
     }
 </script>
 <%@ include file="../footer.jsp"%>

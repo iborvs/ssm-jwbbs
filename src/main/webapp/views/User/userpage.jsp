@@ -63,6 +63,7 @@
 </div>
 <script>
     getInfo();
+    $.session.get('user');
     function pageReload() {
         location.reload();
     }
