@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 import java.util.List;
 
 @Service
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return state;
 	}
+
 	public int userRegister(User newUser){
 		List<User> users = UserMapper.findUser(newUser);
 		int state = 0;
@@ -38,9 +40,11 @@ public class UserServiceImpl implements UserService {
 		}
 		return state;
 	}
-	public int userFind(User findUser){
-		int state = 0;
-		return state;
+	public User userFind(User findUser){
+		List<User> users = UserMapper.findUser(findUser);
+		if(users.size()>0)
+			return  users.get(0);
+		return null;
 	}
 	public int userInfoUpdate(User loginUser){
 		int state = 0;

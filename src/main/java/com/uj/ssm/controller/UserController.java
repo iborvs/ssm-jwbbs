@@ -12,10 +12,12 @@ import java.io.PrintWriter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -34,12 +36,17 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		String username=request.getParameter("username");
 		String userpwd=request.getParameter("password");
+		System.out.println(userpwd);
 		userpwd = MD5.md5(userpwd,username);
 		User loginUser = new User(username,userpwd);
+		Cookie[] cookies = request.getCookies();
 		int state;
 		state = userService.userLogin(loginUser);
+		System.out.println(userpwd);
 		if(state==1){
-			Cookie cookie=new Cookie("username", username);
+			HttpSession session = request.getSession(true);
+			session.setAttribute("login_user",username);
+			Cookie cookie=new Cookie("login_user", username);
 			cookie.setMaxAge(7*24*60*60);
 			response.addCookie(cookie);
 			//设置头像与默认头像cookie
@@ -60,7 +67,13 @@ public class UserController {
 			writer.println("failed");
 		}
 	}
-
+	@RequestMapping(value =  {"/logout.action"})
+	public void UserLogout(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		Enumeration em = request.getSession().getAttributeNames();
+		while(em.hasMoreElements()){
+			request.getSession().removeAttribute(em.nextElement().toString());
+		}
+	}
 	@RequestMapping(value = {"/register.action"})
 	public void UserRegister(HttpServletRequest request,HttpServletResponse response)throws Exception{
 		request.setCharacterEncoding("utf-8");
@@ -89,12 +102,15 @@ public class UserController {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
-		String username=request.getParameter("username");
+		HttpSession session = request.getSession();
+		String username=session.getAttribute("login_user").toString();
 		String nickname=request.getParameter("nickname");
 		String qq=request.getParameter("qq");
 		String email=request.getParameter("email");
 		String ifavatar=request.getParameter("avatar");
+		Cookie[] cookies = request.getCookies();
 		User editUser = new User(username,"",email,qq,nickname,"","");
+
 		int state;
 		state = userService.userInfoUpdate(editUser);
 		String filePath=request.getServletContext().getRealPath("/");
@@ -110,6 +126,16 @@ public class UserController {
 					destfile.renameTo(new File(filePath+"public/avatar/"+ username));
 				}
 				Files.copy(tempfile.toPath(), destfile.toPath());
+
+				for(Cookie cookiea : cookies){
+					if(cookiea.getName().equals("userimg")){
+						cookiea.setValue(username);
+						cookiea.setPath("/");
+						cookiea.setMaxAge(7*24*60*60);// 设置为30min
+						response.addCookie(cookiea);
+						break;
+					}
+				}
 			}
 		}
 		if(state==1){
@@ -154,5 +180,26 @@ public class UserController {
 		catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	@RequestMapping(value = {"/getuserinfo.action"})
+	public void GetUserInfo(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		String user = request.getParameter("user");
+		PrintWriter writer = response.getWriter();
+		HttpSession session = request.getSession();
+		User login_user=new User();
+		if(session.getAttribute("login_user")!=null){
+			login_user.setUsername(session.getAttribute("login_user").toString());
+			login_user = userService.userFind(login_user);
+			writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" }]");
+		}
+		else if(user!=""){
+			login_user.setUsername(user);
+			login_user = userService.userFind(login_user);
+			if(login_user.getUsername()!=null)
+				writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" }]");
+		}
+		writer.close();
 	}
 	}
