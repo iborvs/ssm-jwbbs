@@ -2,3 +2,4 @@ DBConn.java
 db.properties
 .idea
 target/*
+.DS_Store
