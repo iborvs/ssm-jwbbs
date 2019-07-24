@@ -3,3 +3,4 @@ db.properties
 .idea
 target/*
 .DS_Store
+logs/*

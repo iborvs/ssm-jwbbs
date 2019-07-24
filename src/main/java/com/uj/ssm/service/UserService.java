@@ -6,6 +6,6 @@ public interface UserService {
 
 	public int userLogin(User loginUser);
 	public int userRegister(User newUser);
-	public int userFind(User findUser);
+	public User userFind(User findUser);
 	public int userInfoUpdate(User login);
 }

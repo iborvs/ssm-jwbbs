@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <style>
     .cropper-crop-box, .cropper-view-box {
@@ -13,13 +14,10 @@
         height: 200px;
     }
 </style>
-<%
-    Cookie c = new Cookie("username", "ib");
-    response.addCookie(c);
-%>
+<% long date = new Date().getTime(); request.setAttribute("date", date); %>
 <form action="${pageContext.request.contextPath}/userinfoupdate.action" method="POST" enctype="multipart/form-data" id="uploadFrm">
         <div class="mx-auto">
-            <div id="preview"><img id="avatarPreview" class="avatar" src="../../public/avatar/${cookie.username.value}.png"/></div>
+            <div id="preview"><img id="avatarPreview" class="avatar" src="../../public/avatar/${cookie.userimg.value}.png?${date}"/></div>
             <div style="display: none">
                 <input type="file" id="avatarUpload" name="avatarPic" onchange="preview(this)"/>
             </div>
@@ -30,7 +28,7 @@
     <input id="avatarUploadCpY" type="hidden" name="crop_y">
     <div class="row">
         <div class="mx-auto">
-            <label for="avatarUpload" class="btn btn-info">更改头像</label>
+            <label for="avatarUpload" class="btn btn-info">新头像</label>
             <input class="btn btn-success" name="submit" type="button" value="上传头像" onclick="upload()">
         </div>
     </div>
@@ -58,7 +56,7 @@
             var pos=$('#avatarUpload').val().lastIndexOf("\\");//查找最后一个\的位置
             var filename =  $('#avatarUpload').val().substring(pos+1);
             $('#if-avatar').val(filename);
-            alert($('#if-avatar').val());
+            alert("头像上传成功！");
         }).fail(function(res) {});
     }
 </script>
