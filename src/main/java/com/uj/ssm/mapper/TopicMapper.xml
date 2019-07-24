@@ -8,6 +8,12 @@
       #{lasttime,jdbcType=VARCHAR}, #{comments})
   </insert>
   <update id="TopicKeep" parameterType="com.uj.ssm.pojo.Topic" >
-  update Topic SET lasttime = #{lasttime}, comments = comments + 1 where topicid = #{topicid};
+  update Topic SET lasttime = #{lasttime}, comments = comments + 1 where topicid = #{topicid}
   </update>
+  <select id="TopicRead" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
+    select * from Topic where topicid = #{topicid}
+  </select>
+  <select id="TopicReadAll" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
+    select * from Topic
+  </select>
 </mapper>

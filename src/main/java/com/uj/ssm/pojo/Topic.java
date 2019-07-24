@@ -90,4 +90,7 @@ public class Topic {
         this.topicid = topicid;
         this.lasttime = lasttime;
     }
+    public Topic(int topicid){
+        this.topicid = topicid;
+    }
 }

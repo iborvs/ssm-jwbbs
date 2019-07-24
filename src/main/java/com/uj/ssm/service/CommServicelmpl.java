@@ -18,6 +18,10 @@ public class CommServicelmpl implements CommService {
         System.out.println("yes sir to Commcreate");
         return state;
     }
+    public List<Comm> CommRead(int topicid){
+        List<Comm>lst = commMapper.CommRead(topicid);
+        return lst;
+    }
     //private TopicMapper topicMapper;
 
 }
