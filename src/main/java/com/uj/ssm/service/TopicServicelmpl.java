@@ -21,4 +21,18 @@ public class TopicServicelmpl implements TopicService {
         System.out.println("yes sir to TopicKeep");
         return state;
     }
+    //Topicname owner starttime lasttime comments topicid
+    public Topic TopicRead(Topic topic){
+        Topic ans = topicMapper.TopicRead(topic);
+        return ans;
+    }
+    public List<Topic> TopicReadAll(){
+        List<Topic> lst = topicMapper.TopicReadAll();
+        return lst;
+    }
+    public String TopicGetName(int topicid){
+        String topicname = topicMapper.TopicGetName(topicid);
+        return topicname;
+    }
+
 }

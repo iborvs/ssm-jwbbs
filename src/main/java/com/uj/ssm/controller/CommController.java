@@ -17,6 +17,10 @@ import java.text.SimpleDateFormat;
 import com.uj.ssm.pojo.Topic;
 import com.uj.ssm.pojo.Comm;
 import com.uj.ssm.service.CommService;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import static java.lang.Math.min;
+
 @Controller
 /*
 Topicid commentid owner lasttime content
@@ -51,4 +55,52 @@ public class CommController {
         commService.CommCreate(comm);
         topicService.TopicKeep(topic);
     }
+    @ResponseBody
+    @RequestMapping(value = {"/CommRead.action"})
+    public void CommRead(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        String topicidStr = request.getParameter("topicid");
+        int topicid = 0;
+        if(topicidStr == null || topicidStr.equals("")) {
+            topicid = 0;
+        } else {
+            topicid = Integer.parseInt(topicidStr);
+        }
+        List<Comm> lst = commService.CommRead(topicid);
+        int len = lst.size();
+        //Topicid commentid owner lasttime content
+        writer.println("[");
+        System.out.println("[");
+        for(int i = 0; i < len; i++){
+
+            Comm ans = lst.get(i);
+            System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+            writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+        }
+        writer.println("]");
+        System.out.println("]");
+    }
+    @RequestMapping(value = {"/GetTenComm.action"})
+    //Topicid commentid owner lasttime content
+    public void GetTenComm(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        String owner=request.getParameter("owner");
+        List<Comm>lst = commService.GetTenComm(owner);
+        int len = lst.size();
+        len = min(len, 10);
+        writer.println("[");
+        System.out.println("[");
+        for(int i = 0; i < len; i++){
+            Comm ans = lst.get(i);
+            int topicid = ans.getTopicid();
+            String topicname = topicService.TopicGetName(topicid);
+            System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
+            writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
+        }
+        writer.println("]");
+        System.out.println("]");
+    }
+    //GetTenComm
 }

@@ -7,5 +7,6 @@ import com.uj.ssm.pojo.Comm;
 
 public interface CommMapper {
     int CommCreate(Comm comm);
-    //public int TopicKeep();
+    List<Comm>CommRead(int topicid);
+    List<Comm>GetTenComm(String owner);
 }

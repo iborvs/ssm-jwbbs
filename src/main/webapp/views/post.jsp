@@ -11,6 +11,7 @@
 </html>
 <script type="text/javascript">
 	function fuck(){
-		$.post("../action/UsrRegister", { username: "John", password: "2pmasdasd",email:"smjiba@qq.com",qq:"123123123" } );
+		//$.post("../action/UsrRegister", { username: "John", password: "2pmasdasd",email:"smjiba@qq.com",qq:"123123123" } );
+		$.post("../GetTenComm.action", {owner: "dccc"});
 	}
 </script>

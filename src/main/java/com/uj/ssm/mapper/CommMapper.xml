@@ -6,5 +6,10 @@
     values (#{topicid}, #{owner,jdbcType=VARCHAR},
       #{lasttime,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR})
   </insert>
-
+  <select id="CommRead" parameterType="com.uj.ssm.pojo.Comm" resultType="com.uj.ssm.pojo.Comm" >
+    select * from comments where topicid = #{topicid}
+  </select>
+  <select id="GetTenComm" parameterType="String" resultType="com.uj.ssm.pojo.Comm" >
+    select * from comments where owner = #{owner}
+  </select>
 </mapper>
