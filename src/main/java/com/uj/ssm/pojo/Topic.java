@@ -14,6 +14,7 @@ public class Topic {
     private String owner;
     private String starttime;
     private String lasttime;
+    private String content;
     private int comments;
     private int topicid;
 
@@ -65,6 +66,13 @@ public class Topic {
         this.topicid = topicid;
     }
 
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content){
+        this.content = content;
+    }
+
     public Topic(){
        //do nothing
     }
@@ -79,12 +87,13 @@ public class Topic {
         this.comments = comments;
         this.topicid = topicid;
     }
-    public Topic(String topicname, String owner, String starttime, String lasttime, int comments){
+    public Topic(String topicname, String owner, String starttime, String lasttime, int comments, String content){
         this.topicname =  topicname;
         this.owner = owner;
         this.starttime = starttime;
         this.lasttime = lasttime;
         this.comments = comments;
+        this.content = content;
     }
     public Topic(int topicid, String lasttime){
         this.topicid = topicid;

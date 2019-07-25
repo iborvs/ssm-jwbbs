@@ -3,9 +3,9 @@
 <mapper namespace="com.uj.ssm.mapper.TopicMapper" >
 
   <insert id="TopicCreate" parameterType="com.uj.ssm.pojo.Topic" >
-    insert into Topic (topicname, owner, starttime, lasttime, comments)
+    insert into Topic (topicname, owner, starttime, lasttime, comments, content)
     values (#{topicname,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, #{starttime,jdbcType=VARCHAR},
-      #{lasttime,jdbcType=VARCHAR}, #{comments})
+      #{lasttime,jdbcType=VARCHAR}, #{comments}, #{content})
   </insert>
   <update id="TopicKeep" parameterType="com.uj.ssm.pojo.Topic" >
   update Topic SET lasttime = #{lasttime}, comments = comments + 1 where topicid = #{topicid}

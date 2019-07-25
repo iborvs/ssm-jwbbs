@@ -33,6 +33,7 @@ public class CommController {
     private TopicService topicService;
     @RequestMapping(value = {"/CommCreate.action"})
     public void CommCreate(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicidStr = request.getParameter("topicid");
@@ -58,6 +59,7 @@ public class CommController {
     @ResponseBody
     @RequestMapping(value = {"/CommRead.action"})
     public void CommRead(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicidStr = request.getParameter("topicid");
@@ -87,6 +89,7 @@ public class CommController {
     @RequestMapping(value = {"/GetTenComm.action"})
     //Topicid commentid owner lasttime content
     public void GetTenComm(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String owner=request.getParameter("owner");
@@ -111,6 +114,7 @@ public class CommController {
     }
     @RequestMapping(value = {"/CommDelete.action"})
     public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String commentidStr = request.getParameter("commentid");
