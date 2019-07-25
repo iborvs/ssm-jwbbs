@@ -8,5 +8,6 @@ public interface CommService {
     public List<Comm> CommRead(int topicid);
     public List<Comm> GetTenComm(String owner);
     public int CommDelete(int commentid);
+    public String CommReadOwner(int commentid);
     //public int TopicKeep();
 }

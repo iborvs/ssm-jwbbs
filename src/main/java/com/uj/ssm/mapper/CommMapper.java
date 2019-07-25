@@ -10,4 +10,5 @@ public interface CommMapper {
     List<Comm>CommRead(int topicid);
     List<Comm>GetTenComm(String owner);
     int CommDelete(int commentid);
+    String CommReadOwner(int commentid);
 }

@@ -2,6 +2,7 @@ package com.uj.ssm.controller;
 
 import com.uj.ssm.pojo.User;
 import com.uj.ssm.service.TopicService;
+import com.uj.ssm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,8 @@ public class TopicController {
 
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private UserService userService;
     @RequestMapping(value = {"/TopicCreate.action"})
     //
     public void TopicCreate(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
@@ -105,7 +108,7 @@ public class TopicController {
         System.out.println("\"}]");
     }
     @RequestMapping(value = {"/TopicDelete.action"})
-    public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+    public void TopicDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
@@ -116,6 +119,17 @@ public class TopicController {
         } else {
             topicid = Integer.parseInt(topicidStr);
         }
-        topicService.TopicDelete(topicid);
+        Topic safe = new Topic(topicid);
+        Topic wholeTopic = topicService.TopicRead(safe);
+        String owner = wholeTopic.getOwner();
+        User requestUser = new User();
+        requestUser.setUsername(owner);
+        boolean ok = userService.legalUser(request, requestUser);
+        if(ok == true)
+            topicService.TopicDelete(topicid);
+        else{
+            System.out.println("access denied");
+            writer.println("access denied");
+        }
     }
 }

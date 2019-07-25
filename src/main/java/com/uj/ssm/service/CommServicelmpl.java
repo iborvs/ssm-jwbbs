@@ -30,6 +30,10 @@ public class CommServicelmpl implements CommService {
         int state = commMapper.CommDelete(commentid);
         return state;
     }
+    public String CommReadOwner(int commentid){
+        String owner = commMapper.CommReadOwner(commentid);
+        return owner;
+    }
     //private TopicMapper topicMapper;
 
 }
