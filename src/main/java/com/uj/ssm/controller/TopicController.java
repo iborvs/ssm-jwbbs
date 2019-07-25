@@ -25,23 +25,26 @@ public class TopicController {
     @RequestMapping(value = {"/TopicCreate.action"})
     //
     public void TopicCreate(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicname=request.getParameter("topicname");
         String owner=request.getParameter("owner");
+        String content=request.getParameter("content");
         int state;
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd") ; //使用了默认的格式创建了一个日期格式化对象。
         String ndate = dateFormat.format(date); //可以把日期转换转指定格式的字符串
 
-        Topic topic = new Topic(topicname, owner, ndate, ndate, 1);
+        Topic topic = new Topic(topicname, owner, ndate, ndate, 1, content);
         state = topicService.TopicCreate(topic);
     }
     //return one specific topic in json
     //@ResponseBody
     @RequestMapping(value = {"/TopicRead.action"})
     public void TopicRead(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicidStr = request.getParameter("topicid");
@@ -53,14 +56,15 @@ public class TopicController {
         }
         Topic topic = new Topic(topicid);
         Topic ans = topicService.TopicRead(topic);
-        //topicname owner starttime lasttime comments topicid
-        System.out.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }]");
-        writer.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }]");
+        //topicname owner starttime lasttime comments topicid content
+        System.out.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }]");
+        writer.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }]");
     }
     //return all topics in json
     //@ResponseBody
     @RequestMapping(value = {"/TopicReadAll.action"})
     public void TopicReadAll(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         List<Topic>lst = topicService.TopicReadAll();
@@ -73,14 +77,15 @@ public class TopicController {
                 System.out.print(", ");
                 writer.print(", ");
             }
-            System.out.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }");
-            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" }");
+            System.out.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
         }
         writer.println("]");
         System.out.println("]");
     }
     @RequestMapping(value = {"/TopicGetName.action"})
     public void TopicGetName(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicidStr = request.getParameter("topicid");
@@ -101,6 +106,7 @@ public class TopicController {
     }
     @RequestMapping(value = {"/TopicDelete.action"})
     public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String topicidStr = request.getParameter("topicid");
