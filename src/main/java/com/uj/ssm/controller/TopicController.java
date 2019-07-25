@@ -35,6 +35,11 @@ public class TopicController {
         String owner=request.getParameter("owner");
         String content=request.getParameter("content");
         int state;
+        //用户被封禁检查
+        User requestUser = new User();
+        requestUser.setUsername(request.getSession().getAttribute("login_user").toString());
+        if(!userService.legalUser(request,requestUser))
+            return;
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd") ; //使用了默认的格式创建了一个日期格式化对象。

@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
 		state = UserMapper.updateUserInfo(loginUser);
 		return state;
 	}
-	public boolean legalUser(HttpServletRequest request,User requestUser){
-		HttpSession session = request.getSession(true);
+	public boolean legalUser(HttpServletRequest request,User requestUser){ //request用于判断当前登录用户，request用于判断被操作的用户----
+		HttpSession session = request.getSession(true);          //---判断一个用户时候被封禁时两个参数填同一用户就好
 		User legalUs = new User();
 		requestUser = UserMapper.findUser(requestUser).get(0);
 		if(requestUser ==null)  //请求用户不存在
@@ -64,6 +64,8 @@ public class UserServiceImpl implements UserService {
 		if(session.getAttribute("login_user")!=null){
 			legalUs.setUsername(session.getAttribute("login_user").toString());
 			legalUs = UserMapper.findUser(legalUs).get(0);
+			if(legalUs.getPrivileges()==-1)
+				return false;
 			if(legalUs!=null){
 				if(legalUs.getPrivileges() ==1 || legalUs.getUsername().equals(requestUser.getUsername()))
 					return true;
@@ -82,6 +84,7 @@ public class UserServiceImpl implements UserService {
 	public boolean ifAdmin(HttpServletRequest request){
 		HttpSession session = request.getSession(true);
 		User requestUser = new User();
+		requestUser.setUsername( session.getAttribute("login_user").toString());
 		requestUser = UserMapper.findUser(requestUser).get(0);
 		if(requestUser!=null)
 			if(requestUser.getPrivileges()==1)

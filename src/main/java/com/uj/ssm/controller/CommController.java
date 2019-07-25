@@ -39,6 +39,12 @@ public class CommController {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
+        //用户被封禁检查
+        User requestUser = new User();
+        requestUser.setUsername(request.getSession().getAttribute("login_user").toString());
+        if(!userService.legalUser(request,requestUser))
+            return;
+
         String topicidStr = request.getParameter("topicid");
         int topicid = 0;
         if(topicidStr == null || topicidStr.equals("")) {

@@ -66,13 +66,16 @@
                                         <div class="mx-auto" id="editInfoArea" style="display: none">
                                             <a class="btn btn-success" name="submit" type="button" href="/userInfo.views">修改信息 </a>
                                             <a class="btn btn-info" name="submit" type="button" href="/userInfo.views">发布新帖 </a>
-                                            <a class="btn btn-danger" id="ban-btn" type="button" href="/banUser.action" style="display: none">禁止用户 </a>
-                                            <a class="btn btn-warning" id="release-btn"  type="button" href="/releaseUser.action" style="display: none">解除禁止 </a>
+                                        </div>
+                                        <div class="mx-auto" id="banArea" style="display: none">
+                                            <a class="btn btn-danger" id="ban-btn" type="button" onclick="banUser()" >禁止用户 </a>
+                                            <a class="btn btn-warning" id="release-btn"  type="button" onclick="releaseUser()">解除禁止 </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
+                        <div style="display: none"><label for="nickname">昵称:</label>  <span id="userid"></span></div>
                         <div class="row">
                             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
                                 <hr>
@@ -98,8 +101,8 @@
             function (response) {
                 var json=$.parseJSON(response);
                 if(json[0].status.indexOf("success")!=-1){
-                    $("#ban-btn").show();
-                    $("#release-btn").show();
+                    if(GetQueryString("user")!=null)
+                        $("#banArea").show();
                 }
             }
         );
@@ -107,6 +110,7 @@
     function banUser() {
         $.get(
             "/banUser.action",
+            "user="+GetQueryString("user"),
             function (response) {
                 var json=$.parseJSON(response);
                 if(json[0].status.indexOf("success")!=-1){
@@ -119,6 +123,7 @@
     function releaseUser() {
         $.get(
             "/releaseUser.action",
+            "user="+GetQueryString("user"),
             function (response) {
                 var json=$.parseJSON(response);
                 if(json[0].status.indexOf("success")!=-1){

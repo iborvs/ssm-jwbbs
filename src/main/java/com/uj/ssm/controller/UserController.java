@@ -216,11 +216,12 @@ public class UserController {
 		else{ //有请求用户
 			if(login_user.getUsername()!=""){ //登录用户不为空 判断用户权限
 				login_user = userService.userFind(login_user);
-				if(login_user.getPrivileges()==1){
-					self = "1";
-				}
-				else if(login_user.getUsername().equals(request_user.getUsername())){ //权限不足 但是是自己的页面
-					self = "1";
+				//if(login_user.getPrivileges()==1){
+				//	self = "1";
+				//}
+				//else
+					if(login_user.getUsername().equals(request_user.getUsername())){ //权限不足 但是是自己的页面
+						self = "1";
 				}
 			}
 			outputUser.setUsername(request_user.getUsername());  //设置输出信息用户为请求用户
@@ -319,6 +320,6 @@ public class UserController {
 			}
 		}
 			writer.println("[{ \"status\" : \"failed\"}]");
-		writer.close();
+			writer.close();
 	}
 	}
