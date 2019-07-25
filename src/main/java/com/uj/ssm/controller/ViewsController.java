@@ -51,7 +51,7 @@ public class ViewsController {
 		}else{
 			writer.println("failed");
 		}
-		return "welcome.blade.jsp";
+		return "redirect:profile.views";
 	}
 
 	@RequestMapping(value = {"/register.views"})
@@ -64,7 +64,7 @@ public class ViewsController {
 		}else{
 			writer.println("failed");
 		}
-		return "welcome.blade.jsp";
+		return "redirect:profile.views";
 	}
 
 	@RequestMapping(value = {"/profile.views"})
@@ -123,5 +123,12 @@ public class ViewsController {
 			return url;
 		url+="&commentid="+commentid;
 		return url;
+	}
+	@RequestMapping(value = {"/newTopic.views"})
+	public String newTopicViews(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		request.setCharacterEncoding("utf-8");
+		if(userService.ifLoggedin(request))
+			return "";
+		return "redirect:/views/welcome.blade.jsp?error=0";
 	}
 	}

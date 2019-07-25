@@ -51,17 +51,23 @@
                                 </form>
                                 <form action="/user" method="POST" enctype="application/x-www-form-urlencoded" id="userinfo-form">
                                     <div class="row">
-                                        <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
                                                 <label for="nickname">昵称:</label>  <span id="nickname"></span>
                                         </div>
-                                        <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
                                             <label for="qq">qq:</label>  <span id="qq"></span>
                                         </div>
-                                        <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
                                             <label for="email">email:</label>  <span id="email"></span>
+                                        </div>
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
+                                            <label for="privileges">用户状态:</label>  <span id="privileges"></span>
                                         </div>
                                         <div class="mx-auto" id="editInfoArea" style="display: none">
                                             <a class="btn btn-success" name="submit" type="button" href="/userInfo.views">修改信息 </a>
+                                            <a class="btn btn-info" name="submit" type="button" href="/userInfo.views">发布新帖 </a>
+                                            <a class="btn btn-danger" id="ban-btn" type="button" href="/banUser.action" style="display: none">禁止用户 </a>
+                                            <a class="btn btn-warning" id="release-btn"  type="button" href="/releaseUser.action" style="display: none">解除禁止 </a>
                                         </div>
                                     </div>
                                 </form>
@@ -87,7 +93,41 @@
     $(document).ready(function(){
         getInfo();
         getUserComments();
+        $.get(
+            "/admin.if",
+            function (response) {
+                var json=$.parseJSON(response);
+                if(json[0].status.indexOf("success")!=-1){
+                    $("#ban-btn").show();
+                    $("#release-btn").show();
+                }
+            }
+        );
     });
+    function banUser() {
+        $.get(
+            "/banUser.action",
+            function (response) {
+                var json=$.parseJSON(response);
+                if(json[0].status.indexOf("success")!=-1){
+                    alert("禁止成功!");
+                    pageReload();
+                }
+            }
+        );
+    }
+    function releaseUser() {
+        $.get(
+            "/releaseUser.action",
+            function (response) {
+                var json=$.parseJSON(response);
+                if(json[0].status.indexOf("success")!=-1){
+                    alert("解除成功!");
+                    pageReload();
+                }
+            }
+        );
+    }
     function pageReload() {
         location.reload();
     }
@@ -203,6 +243,14 @@
                         $("#qq").html(json[0].qq);
                         $("#email").html(json[0].email);
                         $("#avatarPreview").attr("src","../../avatar.views?user="+json[0].username+"&date=${date}");
+                        switch (json[0].privileges) {
+                            case "0":
+                                $("#privileges").html("正常");break;
+                            case "1":
+                                $("#privileges").html("管理员");break;
+                            case "-1":
+                                $("#privileges").html("已封禁");break;
+                        }
                         if(json[0].self=="1"){
                             $("#editInfoArea").show();
                         }

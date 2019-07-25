@@ -11,4 +11,6 @@ public interface UserMapper {
     int updateLoginDate(User loginUser);
     int updateUserInfo(User loginUser);
     List<User> findUser(User user);
+    int banUser(User user);
+    int releaseUser(User user);
 }

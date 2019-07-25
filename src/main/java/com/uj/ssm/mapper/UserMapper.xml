@@ -22,4 +22,10 @@
   <update id="updateUserInfo" parameterType="com.uj.ssm.pojo.User" >
     update USER set email = #{email},qq = #{qq},nickname = #{nickname} where username = #{username}
   </update>
+  <update id="banUser" parameterType="com.uj.ssm.pojo.User" >
+    update USER set privileges = '-1' where username = #{username}
+  </update>
+  <update id="releaseUser" parameterType="com.uj.ssm.pojo.User" >
+    update USER set privileges = '0' where username = #{username}
+  </update>
 </mapper>

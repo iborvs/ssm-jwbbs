@@ -44,6 +44,16 @@ public class User implements Serializable {
 		this.registerDate = registerDate;
 		this.lateLoginDate = lateLoginDate;
 	}
+	public User(String username, String password, String email, String qq,String nickname,String registerDate,String lateLoginDate,int privileges) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.qq = qq;
+		this.nickname = nickname;
+		this.registerDate = registerDate;
+		this.lateLoginDate = lateLoginDate;
+		this.privileges = privileges;
+	}
 	public User(String username,String password){
 		this.username = username;
 		this.password = password;

@@ -38,13 +38,11 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		String username=request.getParameter("username");
 		String userpwd=request.getParameter("password");
-		System.out.println(userpwd);
 		userpwd = MD5.md5(userpwd,username);
 		User loginUser = new User(username,userpwd);
 		Cookie[] cookies = request.getCookies();
 		int state;
 		state = userService.userLogin(loginUser);
-		System.out.println(userpwd);
 		if(state==1){
 			HttpSession session = request.getSession(true);
 			session.setAttribute("login_user",username);
@@ -64,16 +62,25 @@ public class UserController {
 			cookie.setMaxAge(7*24*60*60);
 			response.addCookie(imgcookie);
 			writer.println("success");
-
 		}else{
 			writer.println("failed");
 		}
+		writer.close();
 	}
 	@RequestMapping(value =  {"/logout.action"})
 	public void UserLogout(HttpServletRequest request,HttpServletResponse response)throws Exception{
 		Enumeration em = request.getSession().getAttributeNames();
-		while(em.hasMoreElements()){
+		while(em.hasMoreElements()){ //清除session
 			request.getSession().removeAttribute(em.nextElement().toString());
+		}
+		Cookie[] cookies=request.getCookies();
+		for(Cookie cookie: cookies){ //清除cookie
+			if(cookie.getName().equals("userimg")){
+
+			}
+			cookie.setMaxAge(0);
+			cookie.setPath("/");
+			response.addCookie(cookie);
 		}
 	}
 	@RequestMapping(value = {"/register.action"})
@@ -98,6 +105,7 @@ public class UserController {
 		else{
 				writer.println("success");
 		}
+		writer.close();
 	}
 	@RequestMapping(value = {"/userinfoupdate.action"})
 	public void UserInfoUpdate(HttpServletRequest request,HttpServletResponse response)throws Exception{
@@ -146,6 +154,7 @@ public class UserController {
 		else {
 			writer.println("failed");
 		}
+		writer.close();
 	}
 	@RequestMapping(value = {"/uploadavatar.action"})
 	public void UploadAvatar(HttpServletRequest request,HttpServletResponse response)throws Exception{
@@ -205,9 +214,12 @@ public class UserController {
 			}
 		}
 		else{ //有请求用户
-			if(login_user.getUsername()!=null){ //登录用户不为空 判断用户权限
+			if(login_user.getUsername()!=""){ //登录用户不为空 判断用户权限
 				login_user = userService.userFind(login_user);
 				if(login_user.getPrivileges()==1){
+					self = "1";
+				}
+				else if(login_user.getUsername().equals(request_user.getUsername())){ //权限不足 但是是自己的页面
 					self = "1";
 				}
 			}
@@ -215,7 +227,10 @@ public class UserController {
 		}
 		outputUser = userService.userFind(outputUser);
 		//输出用户信息
-		writer.println("[{ \"username\" : \""+outputUser.getUsername()+"\",\"nickname\": \""+outputUser.getNickname()+"\" , \"qq\" : \" "+outputUser.getQq() + "\" , \"email\" : \" "+outputUser.getEmail()+"\" ,\"self\":\""+self+"\"}]");
+		writer.println("[{ \"username\" : \""+outputUser.getUsername()+"\",\"nickname\": \""+
+				outputUser.getNickname()+"\" , \"qq\" : \" "+outputUser.getQq() + "\" , \"email\" : \" "+
+				outputUser.getEmail()+"\" ,\"self\":\""+
+				self+"\" ,\" privileges\": \""+outputUser.getPrivileges()+"\" }]");
 		writer.close();
 	}
 	@RequestMapping(value = {"/legal.if"})
@@ -231,6 +246,50 @@ public class UserController {
 			writer.println("[{ \"status\" : \"success\"}]");
 		else
 			writer.println("[{ \"status\" : \"failed\"}]");
+		writer.close();
+	}
+	@RequestMapping(value =  {"/banUser.action"})
+	public void BanUser(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter writer = response.getWriter();
+		String user = request.getParameter("user");
+		User bannedUser = new User();
+		boolean status=false;
+		if(user!=null){
+			bannedUser.setUsername(user);
+			bannedUser = userService.userFind(bannedUser);
+			if(userService.ifAdmin(request) && bannedUser.getPrivileges()==0){
+				status = userService.banUser(bannedUser);
+			}
+		}
+		if(status)
+			writer.println("[{ \"status\" : \"success\"}]");
+		else
+			writer.println("[{ \"status\" : \"failed\"}]");
+		writer.close();
+	}
+
+	@RequestMapping(value =  {"/releaseUser.action"})
+	public void releaseUser(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter writer = response.getWriter();
+		String user = request.getParameter("user");
+		User bannedUser = new User();
+		boolean status=false;
+		if(user!=null){
+			bannedUser.setUsername(user);
+			if(userService.ifAdmin(request))
+				status = userService.releaseUser(bannedUser);
+		}
+		if(status)
+			writer.println("[{ \"status\" : \"success\"}]");
+		else
+			writer.println("[{ \"status\" : \"failed\"}]");
+		writer.close();
 	}
 	@RequestMapping(value = {"login.if"})
 	public void IfLogin(HttpServletRequest request,HttpServletResponse response)throws Exception{
@@ -244,5 +303,22 @@ public class UserController {
 		}
 		else
 			writer.println("[{ \"status\" : \"failed\"}]");
+		writer.close();
+	}
+	@RequestMapping(value = {"admin.if"})
+	public void IfAdmin(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter writer = response.getWriter();
+		HttpSession session = request.getSession();
+		if(session.getAttribute("login_user") != null){
+			if(userService.ifAdmin(request)){
+				writer.println("[{ \"status\" : \"success\"}]");
+				return;
+			}
+		}
+			writer.println("[{ \"status\" : \"failed\"}]");
+		writer.close();
 	}
 	}

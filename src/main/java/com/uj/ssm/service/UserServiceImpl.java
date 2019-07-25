@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
 	public boolean legalUser(HttpServletRequest request,User requestUser){
 		HttpSession session = request.getSession(true);
 		User legalUs = new User();
+		requestUser = UserMapper.findUser(requestUser).get(0);
+		if(requestUser ==null)  //请求用户不存在
+			return false;
+		else if(requestUser.getPrivileges()==-1) //请求用户被禁止
+			return false;
 		if(session.getAttribute("login_user")!=null){
 			legalUs.setUsername(session.getAttribute("login_user").toString());
 			legalUs = UserMapper.findUser(legalUs).get(0);
@@ -65,5 +70,40 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return false;
+	}
+	public boolean ifLoggedin(HttpServletRequest request){
+		HttpSession session = request.getSession(true);
+		User legalUs = new User();
+		if(session.getAttribute("login_user")!=null){
+			return true;
+		}
+		return false;
+	}
+	public boolean ifAdmin(HttpServletRequest request){
+		HttpSession session = request.getSession(true);
+		User requestUser = new User();
+		requestUser = UserMapper.findUser(requestUser).get(0);
+		if(requestUser!=null)
+			if(requestUser.getPrivileges()==1)
+				return true;
+		return false;
+	}
+	public boolean banUser(User banneduser){
+		int state=0;
+		if(banneduser!=null)
+			state = UserMapper.banUser(banneduser);
+		if(state==1)
+			return true;
+		else
+			return false;
+	}
+	public boolean releaseUser(User banneduser){
+		int state=0;
+		if(banneduser!=null)
+			state = UserMapper.releaseUser(banneduser);
+		if(state==1)
+			return true;
+		else
+			return false;
 	}
 }
