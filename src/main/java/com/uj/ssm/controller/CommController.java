@@ -3,6 +3,7 @@ package com.uj.ssm.controller;
 
 import com.uj.ssm.pojo.User;
 import com.uj.ssm.service.TopicService;
+import com.uj.ssm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,8 @@ public class CommController {
     private CommService commService;
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private UserService userService;
     @RequestMapping(value = {"/CommCreate.action"})
     public void CommCreate(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
         response.setCharacterEncoding("utf-8");
@@ -124,6 +127,15 @@ public class CommController {
         } else {
             commentid = Integer.parseInt(commentidStr);
         }
-        commService.CommDelete(commentid);
+        String owner = commService.CommReadOwner(commentid);
+        User requestUser = new User();
+        requestUser.setUsername(owner);
+        boolean ok = userService.legalUser(request, requestUser);
+        if(ok == true)
+            commService.CommDelete(commentid);
+        else{
+            System.out.println("access denied");
+            writer.println("access denied");
+        }
     }
 }
