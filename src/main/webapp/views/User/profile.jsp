@@ -122,7 +122,7 @@
             url = 'user='+"${cookie.login_user.value}";
         $.get(
             '/legal.if',
-            user,
+            url,
             function (response) {
                 if(response!=null){
                     var json=$.parseJSON(response);
