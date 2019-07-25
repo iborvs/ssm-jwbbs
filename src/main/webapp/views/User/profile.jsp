@@ -29,9 +29,9 @@
         #hr_line{
             height: 10px;
         }
-        .del:link{color:red;}
-
-        .del:visited{color:red;}
+        a.del:link{color:red !important;}
+        a.del{color:red !important;}
+        a.del:visited{color:red !important;}
     </style>
 </head>
 <body>
@@ -84,9 +84,10 @@
     </div>
 </div>
 <script>
-    getInfo();
-    getUserComments();
-
+    $(document).ready(function(){
+        getInfo();
+        getUserComments();
+    });
     function pageReload() {
         location.reload();
     }
@@ -110,12 +111,26 @@
         }
     }
     function getUserComments(){
+        var user = GetQueryString("user");
+        var self = "0";
+        $.get(
+            '/legal.if',
+            'user='+GetQueryString("user"),
+            function (response) {
+                if(response!=null){
+                    var json=$.parseJSON(response);
+                    if(json[0].status.indexOf("success")!=-1){
+                        self = "1";
+                    }
+                }
+            }
+        );
         $.get(
             '${pageContext.request.contextPath}/GetTenComm.action',
-            'owner='+GetQueryString("user"),
+            'owner='+user,
             function(response,status,xhr){
                 if(response!=null){
-                    if( true ){
+                    if( status == "success" ){
                         response=response.replace(/[\r\n]/g,"");
                         //response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
@@ -143,19 +158,23 @@
                         alert("获取数据失败，请检查网络");
                     }
                 }
+                if(self=="1"){
+                    $(".del").show();
+                }
             }
         );
     }
-    function GetQueryString( )
+    function GetQueryString(name)
     {
         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
         var r = window.location.search.substr(1).match(reg);
         if(r!=null)return  unescape(r[2]); return null;
     }
     function getInfo() {
+        var user = GetQueryString("user");
         $.get(
             '${pageContext.request.contextPath}/getuserinfo.action',
-            'user='+GetQueryString("user"),
+            'user='+user,
             function(response,status,xhr){
                 if(response!=null){
                     if( true ){

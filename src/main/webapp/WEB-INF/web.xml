@@ -57,4 +57,8 @@
     <servlet-name>springmvc</servlet-name>
     <url-pattern>*.views</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <url-pattern>*.if</url-pattern>
+  </servlet-mapping>
 </web-app>

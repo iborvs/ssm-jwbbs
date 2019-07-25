@@ -191,14 +191,18 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
 		User login_user=new User();
-		if(user!=""){
-			login_user.setUsername(user);
-			login_user = userService.userFind(login_user);
-			if(login_user.getUsername()!=null){
-				if(session.getAttribute("login_user")!=null){
-					if(session.getAttribute("login_user").toString().equals(login_user.getUsername())){
-						writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
+		if(user!=null){
+			if(user!=""){
+				login_user.setUsername(user);
+				login_user = userService.userFind(login_user);
+				if(login_user.getUsername()!=null){
+					if(session.getAttribute("login_user")!=null){
+						if(session.getAttribute("login_user").toString().equals(login_user.getUsername())){
+							writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
+						}
 					}
+					else
+						writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"0\"}]");
 				}
 				else
 					writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"0\"}]");
@@ -211,20 +215,21 @@ public class UserController {
 		}
 		writer.close();
 	}
-	@RequestMapping(value = {"/privileges.action"})
+	@RequestMapping(value = {"/legal.if"})
 	public void GetPrivileges(HttpServletRequest request,HttpServletResponse response)throws Exception{
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
 		String user = request.getParameter("user");
 		PrintWriter writer = response.getWriter();
 		User reUser = new User();
 		reUser.setUsername(user);
 		if(userService.legalUser(request,reUser))
-			writer.println("success");
+			writer.println("[{ \"status\" : \"success\"}]");
 		else
-			writer.println("failed");
+			writer.println("[{ \"status\" : \"failed\"}]");
 	}
-	@RequestMapping(value = {"login_if"})
+	@RequestMapping(value = {"login.if"})
 	public void IfLogin(HttpServletRequest request,HttpServletResponse response)throws Exception{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
@@ -232,9 +237,9 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
 		if(session.getAttribute("login_user") != null){
-			writer.println("success");
+			writer.println("[{ \"status\" : \"success\"}]");
 		}
 		else
-			writer.println("failed");
+			writer.println("[{ \"status\" : \"failed\"}]");
 	}
 	}

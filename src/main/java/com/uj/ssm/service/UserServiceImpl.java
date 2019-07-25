@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 			legalUs.setUsername(session.getAttribute("login_user").toString());
 			legalUs = UserMapper.findUser(legalUs).get(0);
 			if(legalUs!=null){
-				if(legalUs.getPrivileges() ==1 || legalUs.getUsername() == requestUser.getUsername())
+				if(legalUs.getPrivileges() ==1 || legalUs.getUsername().equals(requestUser.getUsername()))
 					return true;
 			}
 		}
