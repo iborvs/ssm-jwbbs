@@ -191,28 +191,31 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
 		User login_user=new User();
-		if(user!=null){
-			if(user!=""){
-				login_user.setUsername(user);
-				login_user = userService.userFind(login_user);
-				if(login_user.getUsername()!=null){
-					if(session.getAttribute("login_user")!=null){
-						if(session.getAttribute("login_user").toString().equals(login_user.getUsername())){
-							writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
-						}
-					}
-					else
-						writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"0\"}]");
-				}
-				else
-					writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"0\"}]");
+		if(session.getAttribute("login_user")!=null){
+			login_user.setUsername(session.getAttribute("login_user").toString());
+		}
+		User request_user = new User();
+		request_user.setUsername(user);
+		User outputUser = new User();
+		String self = "0";
+		if(request_user.getUsername() == null){ //无请求用户则寻找登录用户
+			if(login_user.getUsername()!=""){
+				self = "1";
+				outputUser.setUsername(login_user.getUsername());
 			}
 		}
-		else if(session.getAttribute("login_user")!=null){
-			login_user.setUsername(session.getAttribute("login_user").toString());
-			login_user = userService.userFind(login_user);
-			writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
+		else{ //有请求用户
+			if(login_user.getUsername()!=null){ //登录用户不为空 判断用户权限
+				login_user = userService.userFind(login_user);
+				if(login_user.getPrivileges()==1){
+					self = "1";
+				}
+			}
+			outputUser.setUsername(request_user.getUsername());  //设置输出信息用户为请求用户
 		}
+		outputUser = userService.userFind(outputUser);
+		//输出用户信息
+		writer.println("[{ \"username\" : \""+outputUser.getUsername()+"\",\"nickname\": \""+outputUser.getNickname()+"\" , \"qq\" : \" "+outputUser.getQq() + "\" , \"email\" : \" "+outputUser.getEmail()+"\" ,\"self\":\""+self+"\"}]");
 		writer.close();
 	}
 	@RequestMapping(value = {"/legal.if"})

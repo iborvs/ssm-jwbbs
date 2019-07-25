@@ -111,11 +111,18 @@
         }
     }
     function getUserComments(){
-        var user = GetQueryString("user");
+        var user="";
+        var url="";
+        if(GetQueryString("user")!=null)
+            user = GetQueryString("user");
         var self = "0";
+        if(user!="")
+            url = 'user='+user;
+        else if("${cookie.login_user.value}")
+            url = 'user='+"${cookie.login_user.value}";
         $.get(
             '/legal.if',
-            'user='+GetQueryString("user"),
+            user,
             function (response) {
                 if(response!=null){
                     var json=$.parseJSON(response);
@@ -125,9 +132,13 @@
                 }
             }
         );
+        if(user!="")
+            url = 'owner='+user;
+        else if("${cookie.login_user.value}")
+            url = 'owner='+"${cookie.login_user.value}";
         $.get(
             '${pageContext.request.contextPath}/GetTenComm.action',
-            'owner='+user,
+            url,
             function(response,status,xhr){
                 if(response!=null){
                     if( status == "success" ){
@@ -171,10 +182,17 @@
         if(r!=null)return  unescape(r[2]); return null;
     }
     function getInfo() {
-        var user = GetQueryString("user");
+        var user="";
+        var url="";
+        if(GetQueryString("user")!=null)
+            user = GetQueryString("user");
+        if(user!="")
+            url = "user="+user;
+        else if("${cookie.login_user.value}")
+            url = 'user='+"${cookie.login_user.value}";
         $.get(
             '${pageContext.request.contextPath}/getuserinfo.action',
-            'user='+user,
+            url,
             function(response,status,xhr){
                 if(response!=null){
                     if( true ){

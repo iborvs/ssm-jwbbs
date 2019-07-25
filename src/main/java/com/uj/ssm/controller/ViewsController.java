@@ -68,18 +68,24 @@ public class ViewsController {
 	}
 
 	@RequestMapping(value = {"/profile.views"})
-	public String profileViews(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public void profileViews(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		request.setCharacterEncoding("utf-8");
 		String username = request.getParameter("user");
+		System.out.println(username);
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
-		if(username!=null){
-			return "User/profile.jsp?user="+username;
-		}else{
-			writer.println("failed");
+		if(username!=null && username!="null"){
+			request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
+		}else if(session.getAttribute("login_user")!=null)
+			{
+				request.setAttribute("user",session.getAttribute("login_user").toString());
+				request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
+			//writer.println("failed");
 		}
-		return "welcome.blade.jsp";
+		else {
+			request.getRequestDispatcher("/views/welcome.blade.jsp").forward(request, response);
+		}
 	}
 
 	@RequestMapping(value = {"/avatar.views"})
