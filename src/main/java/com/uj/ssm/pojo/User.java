@@ -13,10 +13,27 @@ public class User implements Serializable {
 	private String password;// 性别
 	private String registerDate;// 生日
 	private String lateLoginDate;// 地址
-	private  String email;
+	private String email;
 	private String qq;
-	private  String nickname;
-	//附加对象List
+	private String nickname;
+	private int privileges;
+
+	public String getLateLoginDate() {
+		return lateLoginDate;
+	}
+
+	public void setLateLoginDate(String lateLoginDate) {
+		this.lateLoginDate = lateLoginDate;
+	}
+
+	public int getPrivileges() {
+		return privileges;
+	}
+
+	public void setPrivileges(int privileges) {
+		this.privileges = privileges;
+	}
+//附加对象List
 
 	public User(String username, String password, String email, String qq,String nickname,String registerDate,String lateLoginDate) {
 		this.username = username;

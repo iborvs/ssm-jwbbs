@@ -99,4 +99,23 @@ public class ViewsController {
 		}
 		return "../public/avatar/iborvs.png";
 	}
+	@RequestMapping(value =  {"/topic.views"})
+	public String getTopicContent(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		request.setCharacterEncoding("utf-8");
+		String topicid = request.getParameter("topicid");
+		String commentid = request.getParameter("commentid");
+		response.setContentType("text/html;charset=utf-8");
+		String url ="PostPage.jsp?topicid=";
+		if(topicid == null)
+			return "welcome.blade.jsp";
+		else if(topicid == "")
+			return "welcome.blade.jsp";
+		url+=topicid;
+		if(commentid == null)
+			return url;
+		else if(commentid =="")
+			return url;
+		url+="&commentid="+commentid;
+		return url;
+	}
 	}

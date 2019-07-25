@@ -29,6 +29,9 @@
         #hr_line{
             height: 10px;
         }
+        .del:link{color:red;}
+
+        .del:visited{color:red;}
     </style>
 </head>
 <body>
@@ -58,7 +61,7 @@
                                             <label for="email">email:</label>  <span id="email"></span>
                                         </div>
                                         <div class="mx-auto" id="editInfoArea" style="display: none">
-                                            <a class="btn btn-success" name="submit" type="button" value="修改信息" href="/userInfo.views" />
+                                            <a class="btn btn-success" name="submit" type="button" href="/userInfo.views">修改信息 </a>
                                         </div>
                                     </div>
                                 </form>
@@ -72,21 +75,6 @@
                         <div class="user-info-panel">
                             <h4>最近发帖:</h4>
                             <div id = "comments_box">
-                            <div class="div_item">
-                                <div class="div_item2 panel panel-default">
-                                    <div class="panel-heading">
-                                        <span>回复:</span>
-                                        <a src="#">关于猫红常年吃屎的事情</a>
-                                        <div style="float: right">
-                                            <span>回复于:</span>
-                                            <span>2019-7-25</span>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body">
-                                        破事水
-                                    </div>
-                                </div>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -102,15 +90,34 @@
     function pageReload() {
         location.reload();
     }
+    function confirmDel(para){
+        if(window.confirm('确定要删除此条回复么？')){
+           var url = "/CommDelete.action";
+            $.get(
+                url,
+                'commentid='+para,
+                function (response,status) {
+                    if(response!=null){
+                        if(status="success")
+                            alert("删除成功！");
+                    }
+                    else{
+                        alert("网络异常");
+                    }
+
+                }
+            );
+        }
+    }
     function getUserComments(){
         $.get(
             '${pageContext.request.contextPath}/GetTenComm.action',
-            'user='+GetQueryString("user"),
+            'owner='+GetQueryString("user"),
             function(response,status,xhr){
                 if(response!=null){
                     if( true ){
                         response=response.replace(/[\r\n]/g,"");
-                        response = response.replace(/\s*/g,"");
+                        //response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
                         for (var i = 0; i < json.length; i++) {
                             var comments = "<div class=\"div_item\">" +
@@ -121,7 +128,7 @@
                                 "                                        <div style=\"float: right\">" +
                                 "                                            <span>回复于:</span>" +
                                 "                                            <span>"+ json[i].lasttime +"</span>" +
-                                    "                                        <span>"+
+                                    "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\')\">删除</a>"+
                                 "                                        </div>" +
                                 "                                    </div>" +
                                 "                                    <div class=\"panel-body\">" +
@@ -139,7 +146,7 @@
             }
         );
     }
-    function GetQueryString(name)
+    function GetQueryString( )
     {
         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
         var r = window.location.search.substr(1).match(reg);

@@ -5,6 +5,8 @@ import com.uj.ssm.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
@@ -50,5 +52,18 @@ public class UserServiceImpl implements UserService {
 		int state = 0;
 		state = UserMapper.updateUserInfo(loginUser);
 		return state;
+	}
+	public boolean legalUser(HttpServletRequest request,User requestUser){
+		HttpSession session = request.getSession(true);
+		User legalUs = new User();
+		if(session.getAttribute("login_user")!=null){
+			legalUs.setUsername(session.getAttribute("login_user").toString());
+			legalUs = UserMapper.findUser(legalUs).get(0);
+			if(legalUs!=null){
+				if(legalUs.getPrivileges() ==1 || legalUs.getUsername() == requestUser.getUsername())
+					return true;
+			}
+		}
+		return false;
 	}
 }

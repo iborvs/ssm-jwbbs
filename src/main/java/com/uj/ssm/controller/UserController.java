@@ -3,6 +3,8 @@ package com.uj.ssm.controller;
 import com.uj.ssm.MD5;
 import com.uj.ssm.imagedeal;
 import com.uj.ssm.pojo.User;
+import com.uj.ssm.service.CommService;
+import com.uj.ssm.service.TopicService;
 import com.uj.ssm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -208,5 +210,31 @@ public class UserController {
 			writer.println("[{ \"username\" : \""+login_user.getUsername()+"\",\"nickname\": \""+login_user.getNickname()+"\" , \"qq\" : \" "+login_user.getQq() + "\" , \"email\" : \" "+login_user.getEmail()+"\" ,\"self\":\"1\"}]");
 		}
 		writer.close();
+	}
+	@RequestMapping(value = {"/privileges.action"})
+	public void GetPrivileges(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		String user = request.getParameter("user");
+		PrintWriter writer = response.getWriter();
+		User reUser = new User();
+		reUser.setUsername(user);
+		if(userService.legalUser(request,reUser))
+			writer.println("success");
+		else
+			writer.println("failed");
+	}
+	@RequestMapping(value = {"login_if"})
+	public void IfLogin(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter writer = response.getWriter();
+		HttpSession session = request.getSession();
+		if(session.getAttribute("login_user") != null){
+			writer.println("success");
+		}
+		else
+			writer.println("failed");
 	}
 	}
