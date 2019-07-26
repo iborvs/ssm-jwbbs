@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../resources/css/bootstrap.css">
     <script src="../resources/js/jquery-2.1.4.min.js"></script>
     <script src="../resources/js/bootstrap.js"></script>
+    <script src="../resources/js/jquery.base64.js"></script>
     <style>
         #img{
             width: 100%;
@@ -26,21 +27,6 @@
             padding-left: 0;
             padding-right: 0;
         }
-        .css-rcz4v8{
-            box-sizing: border-box;
-            flex-basis: 0px;
-            -webkit-box-flex: 1;
-            flex-grow: 1;
-            max-width: 100%;
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-        .css-b46a1g {
-            margin-top: 24px;
-            margin-left: 16px;
-            width: 160px;
-            height: 40px;
-        }
         .css-k58if {
             box-sizing: border-box;
             -webkit-box-flex: 1;
@@ -56,18 +42,6 @@
         }
         .div_box{
             height: 100%;
-        }
-        .btn-lg{
-            padding: 0px;
-            font-size: 14px;
-            line-height: 1.2;
-        }
-        .footer {
-            font-size: 14px;
-            color: #bbb;
-            text-align: center;
-            padding: 20% 0 2%;
-            font-weight: lighter;
         }
         .form-control{
             font-size: 15px;
@@ -120,53 +94,66 @@
             return "";
         }
         function rememberpw() {
-            if(document.getElementById("remember").checked == true) {
+            if(document.getElementById("InputRemember").checked == true) {
+                var password64 = $.base64.encode(document.getElementById("InputPassword").value);
                 setCookie("username", document.getElementById("InputUsername").value, 1);
-                setCookie("password", document.getElementById("InputPassword").value, 1);
-                setCookie("checked",document.getElementById("remember").checked, 1);
+                setCookie("password", password64, 1);
+                setCookie("checked", document.getElementById("InputRemember").value, 1);
             }
             else{
-                document.cookie = "username=;password=;checked=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 document.cookie = "password=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 document.cookie = "checked=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
             }
+        }
+
+
+        function login_leap() {
+                var username = document.getElementById("InputUsername").value;
+                var pwd = document.getElementById("InputPassword").value;
+                $.post("${pageContext.request.contextPath}/login.action", {username:username,password:pwd}, function (data) {
+                    data = data.replace(/[\r\n]/g,"");
+                    if(data == "success"){
+                        alert("登陆成功！");
+                        window.location.href = "/";
+                    }
+                    else{
+                        alert("用户名或密码错误！");
+                    }
+                });
         }
     </script>
 </head>
 <body>
 <div class="container-fluid">
     <div class="col-md-6 div_box">
-        <!--            <div class="css-rcz4v8">-->
-        <!--                <img src="https://console.scaleway.com/42827ed243ccf76c82d512be13dc8057.svg" class="css-b46a1g">-->
-        <!--            </div>-->
         <div class="css-k58if visible-md-block visible-lg-block">
 
         </div>
         <div class="center-block col0">
-            <form action="${pageContext.request.contextPath}/login.action" method="post">
+            <form name="myForm">
                 <div>
                     <h1>登录</h1>
-                    <!--   <p>欢迎加入我们！</p> -->
                 </div>
                 <div class="form-group">
                     <label for="InputUsername"><span class="glyphicon glyphicon-user"></span> 用户名</label>
-                    <input type="text" class="form-control" id="InputUsername" name="username" placeholder="Username">
+                    <input type="text" class="form-control" id="InputUsername" name="username" placeholder="Username" onchange="rememberpw()">
                 </div>
                 <div class="form-group">
                     <label for="InputPassword"><span class="glyphicon glyphicon-lock"></span> 密码</label>
-                    <input type="password" class="form-control" id="InputPassword" name="password" placeholder="Password">
+                    <input type="password" class="form-control" id="InputPassword" name="password" placeholder="Password" onchange="rememberpw()">
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" id="remember" name="InputCheckbox" onclick="rememberpw()">记住密码
+                        <input type="checkbox" id="InputRemember" name="checkbox" onclick="rememberpw()">记住密码
                     </label>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-default col-md-12 col12"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;登录</button>
+                    <button type="button" class="btn btn-default col-md-12 col12" onclick="login_leap()"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;登录</button>
                 </div>
                 <div>
 
-                    <a href="./register.jsp">没有账号？立即注册</a>
+                    <a href="/register.views">没有账号？立即注册</a>
                 </div>
             </form>
         </div>
@@ -176,9 +163,9 @@
     </div>
 </div>
 <script>
-    document.getElementById("remember").checked = getCookie("checked");
+    document.getElementById("InputRemember").checked = getCookie("checked");
     document.getElementById("InputUsername").value = getCookie("username");
-    document.getElementById("InputPassword").value = getCookie("password");
+    document.getElementById("InputPassword").value = $.base64.decode(getCookie("password"));
 </script>
 </body>
 </html>

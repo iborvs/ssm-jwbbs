@@ -26,21 +26,6 @@
             padding-left: 0;
             padding-right: 0;
         }
-        .css-rcz4v8{
-            box-sizing: border-box;
-            flex-basis: 0px;
-            -webkit-box-flex: 1;
-            flex-grow: 1;
-            max-width: 100%;
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-        .css-b46a1g {
-            margin-top: 24px;
-            margin-left: 16px;
-            width: 160px;
-            height: 40px;
-        }
         .css-k58if {
             box-sizing: border-box;
             -webkit-box-flex: 1;
@@ -51,8 +36,8 @@
             margin-right: -8px;
             height: 30%;
             min-height: 30px;
-            padding-top: 5%;
-            padding-bottom: 5%;
+            padding-top: 3%;
+            padding-bottom: 3%;
         }
         .div_box{
             height: 100%;
@@ -61,13 +46,6 @@
             padding: 0px;
             font-size: 14px;
             line-height: 1.2;
-        }
-        .footer {
-            font-size: 14px;
-            color: #bbb;
-            text-align: center;
-            padding: 20% 0 2%;
-            font-weight: lighter;
         }
         .form-control{
             font-size: 15px;
@@ -100,6 +78,92 @@
         }
         var access = function () {
             document.getElementById("if_access").checked = true;
+            checkAccess();
+        }
+
+
+        function validateForm(myForm){
+            var x=document.forms["myForm"]["email"].value;
+            var atpos=x.indexOf("@");
+            var dotpos=x.lastIndexOf(".");
+            if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length){
+                alert("不是一个有效的 e-mail 地址");
+                return false;
+            }
+
+            var userid=document.forms["myForm"]["username"].value;
+            if(userid.length<6||userid.length>12)
+            { alert("用户名为6-12位字符串");
+                return false;}
+
+
+            var nickid=document.forms["myForm"]["nickname"].value;
+            if(nickid.length<6||nickid.length>12)
+            { alert("昵称为6-12位字符串");
+                return false;}
+
+
+            var ps=document.forms["myForm"]["password"].value;
+
+            if (ps.length>=8)
+            {
+                var re =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/;
+
+                if (!re.test(ps))
+                {  alert("密码由至少1个大写字母，1个小写字母和1个数字组成")
+                    return(false);
+                }
+            }
+            else{
+                alert("密码至少8位")
+                return(false);
+            }
+
+            var ps2=document.forms["myForm"]["password2"].value;
+            if(ps!=ps2){
+                alert("两次输入的密码不一致")
+                return false;
+            }
+
+            var qqq=document.forms["myForm"]["qq"].value;
+            var qqPattern = /^[1-9][0-9]{4,10}$/;
+            if(!qqPattern.test(qqq)){
+                alert("请输入5-11位qq号(只能为数字)");
+                return false;
+
+            }
+        }
+        function checkAccess(){
+            if (document.getElementById("if_access").checked){
+                document.getElementById("accept").removeAttribute("disabled");
+            }
+            else{
+                document.getElementById("accept").setAttribute("disabled",true);
+            }
+        }
+
+        window.onunload =function () {
+            document.getElementById("if_access").checked = false;
+        }
+
+        function register_leap() {
+            if(validateForm() != false){
+                var email = document.getElementById("InputEmail").value;
+                var username = document.getElementById("InputUsername").value;
+                var nickname = document.getElementById("InputNickname").value;
+                var pwd = document.getElementById("InputPassword").value;
+                var qq = document.getElementById("InputQQ").value;
+                $.post("${pageContext.request.contextPath}/register.action", {email:email,username:username,nickname:nickname,password:pwd,qq:qq}, function (data) {
+                    data = data.replace(/[\r\n]/g,"");
+                    if(data == "success"){
+                        alert("注册成功，即将前往登录页面...");
+                        window.location.href = "/login.views";
+                    }
+                    else{
+                        alert("该用户名已存在！！");
+                    }
+                });
+            }
         }
     </script>
 </head>
@@ -113,7 +177,7 @@
 
         </div>
         <div class="center-block col0">
-            <form method="post" action="${pageContext.request.contextPath}/register.action">
+            <form name="myForm">
                 <div>
                     <h1>创建你的论坛账号</h1>
                     <p>欢迎加入我们！</p>
@@ -135,12 +199,16 @@
                     <input type="password" class="form-control" id="InputPassword" name="password" placeholder="Password">
                 </div>
                 <div class="form-group">
+                    <label for="InputPassword2"><span class="glyphicon glyphicon-record"></span> 确认密码</label>
+                    <input type="password" class="form-control" id="InputPassword2" name="password2" placeholder="Require">
+                </div>
+                <div class="form-group">
                     <label for="InputQQ"><span class="glyphicon glyphicon-comment"></span> QQ</label>
                     <input type="text" class="form-control" id="InputQQ" name="qq" placeholder="QQ">
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" id="if_access" name="InputCheckbox">我已阅读并同意相关服务条款和隐私政策
+                        <input type="checkbox" id="if_access" name="InputCheckbox" onclick="checkAccess()">我已阅读并同意相关服务条款和隐私政策
                     </label>
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
                         条款&政策
@@ -162,19 +230,9 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-default col-md-12 col12"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;立即注册</button>
+                <button type="button" class="btn btn-default col-md-12 col12" id="accept"  disabled="true" onclick="register_leap()"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;立即注册</button>
             </form>
         </div>
-        <!--            <div>-->
-        <!--                <div class="footer">-->
-        <!--                    Copyright-->
-        <!--                    <span>©</span>-->
-        <!--                    <script>-->
-        <!--                        document.write((new Date).getFullYear())-->
-        <!--                    </script>-->
-        <!--                    Dreamlands All Rights Reserved-->
-        <!--                </div>-->
-        <!--            </div>-->
     </div>
     <div class="col-md-6 col1 visible-md-block visible-lg-block">
         <img src="../assets/timg.jpg" id="img" ondragstart="return false">

@@ -26,14 +26,6 @@
             height: 90px;
             width: 90px;
         }
-        .avatar_box{
-            width: 43px;
-            height: 43px;
-        }
-        .navbar-fixed-top{
-            position: sticky;
-            margin-bottom: 1%;
-        }
         .div_item{
             display: flex;
             justify-content: center;
@@ -92,30 +84,7 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">BBS</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" style="padding: 0;" data-toggle="tooltip" data-placement="bottom" title="个人中心"><img src="../assets/photo.jpg" class="avatar_box img-circle"></a>
-                </li>
-                <li><a href="#">发帖</a></li>
-                <li><a href="login.html">登录</a></li>
-                <li><a href="register.html">注册</a></li>
-            </ul>
-            <form class="navbar-form navbar-right">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
+<%@include file="header.jsp"%>
 <div class="container">
     <div class="item_list">
         <div class="div_item">

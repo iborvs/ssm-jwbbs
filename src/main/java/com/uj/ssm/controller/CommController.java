@@ -40,10 +40,6 @@ public class CommController {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         //用户被封禁检查
-        User requestUser = new User();
-        requestUser.setUsername(request.getSession().getAttribute("login_user").toString());
-        if(!userService.legalUser(request,requestUser))
-            return;
 
         String topicidStr = request.getParameter("topicid");
         int topicid = 0;
@@ -52,9 +48,19 @@ public class CommController {
         } else {
             topicid = Integer.parseInt(topicidStr);
         }
-        System.out.println("topicid = " + topicid);
         String owner=request.getParameter("owner");
         String content=request.getParameter("content");
+        User login_user = userService.getLoginUser(request);
+        if (login_user!=null)
+            owner = login_user.getUsername();
+        else {
+            writer.println("用户未登录");
+            return;
+        }
+        if(!userService.legalUser(request,login_user)){
+            writer.println("用户已封禁");
+            return;
+        }
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd") ; //使用了默认的格式创建了一个日期格式化对象。
@@ -82,18 +88,14 @@ public class CommController {
         int len = lst.size();
         //Topicid commentid owner lasttime content
         writer.println("[");
-        System.out.println("[");
         for(int i = 0; i < len; i++){
             Comm ans = lst.get(i);
             if(i != 0) {
-                System.out.print(", ");
                 writer.print(", ");
             }
-            System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
-            writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+           writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
         }
         writer.println("]");
-        System.out.println("]");
     }
     @RequestMapping(value = {"/GetTenComm.action"})
     //Topicid commentid owner lasttime content
@@ -102,25 +104,29 @@ public class CommController {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String owner=request.getParameter("owner");
+        User login_user = userService.getLoginUser(request);
+        if (login_user!=null)
+            owner = login_user.getUsername();
+        else {
+            writer.println("用户未登录");
+            return;
+        }
         List<Comm>lst = commService.GetTenComm(owner);
         int len = lst.size();
         len = min(len, 10);
         writer.println("[");
-        System.out.println("[");
-        for(int i = 0; i < len; i++){
+              for(int i = 0; i < len; i++){
             Comm ans = lst.get(i);
             int topicid = ans.getTopicid();
             String topicname = topicService.TopicGetName(topicid);
             if(i != 0) {
-                System.out.print(", ");
-                writer.print(", ");
+                       writer.print(", ");
             }
-            System.out.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
-            writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
+             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
         }
         writer.println("]");
-        System.out.println("]");
-    }
+              writer.close();
+        }
     @RequestMapping(value = {"/CommDelete.action"})
     public void CommDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
         response.setCharacterEncoding("utf-8");
@@ -140,7 +146,6 @@ public class CommController {
         if(ok == true)
             commService.CommDelete(commentid);
         else{
-            System.out.println("access denied");
             writer.println("access denied");
         }
     }

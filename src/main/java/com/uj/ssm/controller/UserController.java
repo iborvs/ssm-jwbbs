@@ -75,12 +75,11 @@ public class UserController {
 		}
 		Cookie[] cookies=request.getCookies();
 		for(Cookie cookie: cookies){ //清除cookie
-			if(cookie.getName().equals("userimg")){
-
+			if(cookie.getName().equals("userimg")||cookie.getName().equals("login_user")){
+				cookie.setMaxAge(0);
+				cookie.setPath("/");
+				response.addCookie(cookie);
 			}
-			cookie.setMaxAge(0);
-			cookie.setPath("/");
-			response.addCookie(cookie);
 		}
 	}
 	@RequestMapping(value = {"/register.action"})
@@ -243,6 +242,15 @@ public class UserController {
 		PrintWriter writer = response.getWriter();
 		User reUser = new User();
 		reUser.setUsername(user);
+		if(userService.ifLoggedin(request)){ //若登录 判断是否为自己的页面
+			if(user=="null" || user =="" || user ==null){
+				writer.println("[{ \"status\" : \"success\"}]");
+				writer.close();
+				return;
+			}
+		}
+		else //若没登录那直接没权限
+			writer.println("[{ \"status\" : \"failed\"}]");
 		if(userService.legalUser(request,reUser))
 			writer.println("[{ \"status\" : \"success\"}]");
 		else

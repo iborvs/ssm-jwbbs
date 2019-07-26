@@ -12,6 +12,7 @@ public interface UserService {
 	public int userInfoUpdate(User login);
 	public boolean legalUser(HttpServletRequest request, User requestUser);
 	public boolean ifLoggedin(HttpServletRequest request);
+	public User getLoginUser(HttpServletRequest request);
 	public boolean ifAdmin(HttpServletRequest request);
 	public boolean banUser(User banneduser);
 	public boolean releaseUser(User banneduser);

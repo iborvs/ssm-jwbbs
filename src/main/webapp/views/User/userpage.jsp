@@ -6,7 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="../header.jsp"%>
 <head>
     <script src="../../resources/js/jquery-2.1.4.min.js"></script>
     <script src="../../resources/js/popper.min.js"></script>
@@ -22,6 +21,7 @@
     <title>用户信息</title>
 </head>
 <body>
+<%@ include file="../header.jsp"%>
 <div class="container">
     <div class="panel panel-default user-info-panel">
         <div class="panel-body">

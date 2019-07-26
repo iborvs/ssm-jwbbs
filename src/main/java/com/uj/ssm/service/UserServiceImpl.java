@@ -109,4 +109,15 @@ public class UserServiceImpl implements UserService {
 		else
 			return false;
 	}
+	public User getLoginUser(HttpServletRequest request){
+		HttpSession session = request.getSession(true);
+		User legalUs = new User();
+		if(session.getAttribute("login_user")!=null){
+			legalUs.setUsername(session.getAttribute("login_user").toString());
+			legalUs = userFind(legalUs);
+		}
+		else
+			legalUs =null;
+		return legalUs;
+	}
 }

@@ -39,7 +39,7 @@ public class ViewsController {
 		}else{
 			writer.println("failed");
 		}
-		return "welcome.blade.jsp";
+		return "redirect:/views/welcome.blade.jsp?error=0";
 	}
 	@RequestMapping(value = {"/login.views"})
 	public String loginViews(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
@@ -68,7 +68,7 @@ public class ViewsController {
 	}
 
 	@RequestMapping(value = {"/profile.views"})
-	public void profileViews(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public String profileViews(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		request.setCharacterEncoding("utf-8");
 		String username = request.getParameter("user");
 		System.out.println(username);
@@ -76,15 +76,19 @@ public class ViewsController {
 		PrintWriter writer = response.getWriter();
 		HttpSession session = request.getSession();
 		if(username!=null && username!="null"){
-			request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
+			return "User/profile.jsp";
+			//request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
 		}else if(session.getAttribute("login_user")!=null)
 			{
-				request.setAttribute("user",session.getAttribute("login_user").toString());
-				request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
+				//request.setAttribute("user",session.getAttribute("login_user").toString());
+				//request.getRequestDispatcher("/views/User/profile.jsp").forward(request, response);
 			//writer.println("failed");
+				return "User/profile.jsp";
 		}
 		else {
-			request.getRequestDispatcher("/views/welcome.blade.jsp").forward(request, response);
+			//request.setAttribute("error","0");
+			return "redirect:/views/welcome.blade.jsp?error=0";
+			//request.getRequestDispatcher("redirect:/views/welcome.blade.jsp?error=0").forward(request, response);
 		}
 	}
 
@@ -94,6 +98,9 @@ public class ViewsController {
 		String username = request.getParameter("user");
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session = request.getSession();
+		if(username == "" || username == null || username=="null")
+			if(session.getAttribute("login_user")!=null)
+				username = session.getAttribute("login_user").toString();
 		String filePath=request.getServletContext().getRealPath("/");
 		String destPath = filePath+"public/avatar/"+ username+".png";
 		File tempfile=new File(destPath);
@@ -128,7 +135,7 @@ public class ViewsController {
 	public String newTopicViews(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		request.setCharacterEncoding("utf-8");
 		if(userService.ifLoggedin(request))
-			return "";
+			return "createPost.jsp";
 		return "redirect:/views/welcome.blade.jsp?error=0";
 	}
 	}

@@ -17,7 +17,7 @@
 <% long date = new Date().getTime(); request.setAttribute("date", date); %>
 <form action="${pageContext.request.contextPath}/userinfoupdate.action" method="POST" enctype="multipart/form-data" id="uploadFrm">
         <div class="mx-auto">
-            <div id="preview"><img id="avatarPreview" class="avatar" src="../../public/avatar/${cookie.userimg.value}.png?${date}"/></div>
+            <div id="preview"><img id="avatarPreview" class="avatar" src="../../avatar.views?${date}"/></div>
             <div style="display: none">
                 <input type="file" id="avatarUpload" name="avatarPic" onchange="preview(this)"/>
             </div>

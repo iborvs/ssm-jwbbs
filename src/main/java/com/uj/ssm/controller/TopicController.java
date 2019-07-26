@@ -35,11 +35,19 @@ public class TopicController {
         String owner=request.getParameter("owner");
         String content=request.getParameter("content");
         int state;
-        //用户被封禁检查
-        User requestUser = new User();
-        requestUser.setUsername(request.getSession().getAttribute("login_user").toString());
-        if(!userService.legalUser(request,requestUser))
+
+        User login_user = userService.getLoginUser(request);
+        if (login_user!=null)
+            owner = login_user.getUsername();
+        else {
+            writer.println("用户未登录");
             return;
+        }
+        if(!userService.legalUser(request,login_user)){
+            writer.println("用户已封禁");
+            return;
+        }
+
 
         java.util.Date date = new java.util.Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd") ; //使用了默认的格式创建了一个日期格式化对象。
@@ -65,7 +73,6 @@ public class TopicController {
         Topic topic = new Topic(topicid);
         Topic ans = topicService.TopicRead(topic);
         //topicname owner starttime lasttime comments topicid content
-        System.out.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }]");
         writer.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }]");
     }
     //return all topics in json
@@ -78,19 +85,15 @@ public class TopicController {
         List<Topic>lst = topicService.TopicReadAll();
         int len = lst.size();
         writer.println("[");
-        System.out.println("[");
         for(int i = 0; i < len; i++){
             Topic ans = lst.get(i);
             if(i != 0) {
-                System.out.print(", ");
                 writer.print(", ");
             }
-            System.out.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
-            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+           writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
         }
         writer.println("]");
-        System.out.println("]");
-    }
+        }
     @RequestMapping(value = {"/TopicGetName.action"})
     public void TopicGetName(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
         response.setCharacterEncoding("utf-8");
@@ -106,11 +109,8 @@ public class TopicController {
 
         String topicname = topicService.TopicGetName(topicid);
         writer.print("[{ \"topicname\" : \"");
-        System.out.print("[{ \"topicname\" : \"");
         writer.print(topicname);
-        System.out.print(topicname);
         writer.println("\"}]");
-        System.out.println("\"}]");
     }
     @RequestMapping(value = {"/TopicDelete.action"})
     public void TopicDelete(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
@@ -133,7 +133,6 @@ public class TopicController {
         if(ok == true)
             topicService.TopicDelete(topicid);
         else{
-            System.out.println("access denied");
             writer.println("access denied");
         }
     }

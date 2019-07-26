@@ -6,7 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ include file="../header.jsp"%>
 <head>
     <script src="../../resources/js/jquery-2.1.4.min.js"></script>
     <script src="../../resources/js/popper.min.js"></script>
@@ -35,6 +34,7 @@
     </style>
 </head>
 <body>
+<%@ include file="../header.jsp"%>
 <div class="container">
     <div class="panel panel-default user-info-panel">
         <div class="panel-body">
@@ -163,8 +163,8 @@
         var self = "0";
         if(user!="")
             url = 'user='+user;
-        else if("${cookie.login_user.value}")
-            url = 'user='+"${cookie.login_user.value}";
+        else
+            url = "";
         $.get(
             '/legal.if',
             url,
@@ -179,8 +179,8 @@
         );
         if(user!="")
             url = 'owner='+user;
-        else if("${cookie.login_user.value}")
-            url = 'owner='+"${cookie.login_user.value}";
+        else
+            url = "";
         $.get(
             '${pageContext.request.contextPath}/GetTenComm.action',
             url,
@@ -233,8 +233,8 @@
             user = GetQueryString("user");
         if(user!="")
             url = "user="+user;
-        else if("${cookie.login_user.value}")
-            url = 'user='+"${cookie.login_user.value}";
+        else
+            url = "";
         $.get(
             '${pageContext.request.contextPath}/getuserinfo.action',
             url,
