@@ -2,7 +2,7 @@ package com.uj.ssm.service;
 
 
 import java.util.List;
-
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.uj.ssm.mapper.TopicMapper;
@@ -12,13 +12,13 @@ public class TopicServicelmpl implements TopicService {
     @Autowired
     private TopicMapper topicMapper;
     public int TopicCreate(Topic topic){
+        topic.setContent(StringEscapeUtils.escapeHtml4(topic.getContent())); //topic内容转义
+        topic.setTopicname(StringEscapeUtils.escapeHtml4(topic.getTopicname()));
         int state = topicMapper.TopicCreate(topic);
-        System.out.println("yes sir to TopicCreate");
         return state;
     }
     public int TopicKeep(Topic topic){
         int state = topicMapper.TopicKeep(topic);
-        System.out.println("yes sir to TopicKeep");
         return state;
     }
     //Topicname owner starttime lasttime comments topicid
@@ -32,6 +32,7 @@ public class TopicServicelmpl implements TopicService {
     }
     public List<Topic> TopicReadTen(Topic topic){
         List<Topic> lst = topicMapper.TopicReadTen(topic);
+
         return lst;
     }
     public String TopicGetName(int topicid){

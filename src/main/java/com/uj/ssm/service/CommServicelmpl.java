@@ -2,6 +2,7 @@ package com.uj.ssm.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.uj.ssm.mapper.TopicMapper;
@@ -14,8 +15,8 @@ public class CommServicelmpl implements CommService {
     @Autowired
     private CommMapper commMapper;
     public int CommCreate(Comm comm){
+        comm.setContent(StringEscapeUtils.escapeHtml4(comm.getContent()));
         int state = commMapper.CommCreate(comm);
-        System.out.println("yes sir to Commcreate");
         return state;
     }
     public List<Comm> CommRead(int topicid){
