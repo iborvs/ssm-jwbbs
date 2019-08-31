@@ -64,7 +64,7 @@
                                         </div>
                                         <div class="mx-auto" id="editInfoArea" style="display: none">
                                             <a class="btn btn-success" name="submit" type="button" href="/userInfo.views">修改信息 </a>
-                                            <a class="btn btn-info" name="submit" type="button" href="/userInfo.views">发布新帖 </a>
+                                            <a class="btn btn-info" name="submit" type="button" href="/newTopic.views">发布新帖 </a>
                                         </div>
                                         <div class="mx-auto" id="banArea" style="display: none">
                                             <a class="btn btn-danger" id="ban-btn" type="button" onclick="banUser()" >禁止用户 </a>
@@ -154,6 +154,27 @@
             );
         }
     }
+    function insertCTDiv(json) {
+        for (var i = 0; i < json.length; i++) {
+            var comments = "<div class=\"div_item\">" +
+                "                                <div class=\"div_item2 panel panel-default\">" +
+                "                                    <div class=\"panel-heading\">" +
+                "                                        <span>回复:</span>" +
+                "                                        <a src=\""+  json[i].topicid +"\">"+json[i].topicname+"</a>" +
+                "                                        <div style=\"float: right\">" +
+                "                                            <span>回复于:</span>" +
+                "                                            <span>"+ json[i].lasttime +"</span>" +
+                "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\')\">删除</a>"+
+                "                                        </div>" +
+                "                                    </div>" +
+                "                                    <div class=\"panel-body\">" +
+                json[i].content +
+                "                                    </div>" +
+                "                                </div>" +
+                "                            </div>";
+            $("#comments_box").append(comments);
+        }
+    }
     function getUserComments(){
         var user="";
         var url="";
@@ -189,25 +210,7 @@
                         response=response.replace(/[\r\n]/g,"");
                         //response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
-                        for (var i = 0; i < json.length; i++) {
-                            var comments = "<div class=\"div_item\">" +
-                                "                                <div class=\"div_item2 panel panel-default\">" +
-                                "                                    <div class=\"panel-heading\">" +
-                                "                                        <span>回复:</span>" +
-                                "                                        <a src=\""+  json[i].topicid +"\">"+json[i].topicname+"</a>" +
-                                "                                        <div style=\"float: right\">" +
-                                "                                            <span>回复于:</span>" +
-                                "                                            <span>"+ json[i].lasttime +"</span>" +
-                                    "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\')\">删除</a>"+
-                                "                                        </div>" +
-                                "                                    </div>" +
-                                "                                    <div class=\"panel-body\">" +
-                                json[i].content +
-                                "                                    </div>" +
-                                "                                </div>" +
-                                "                            </div>";
-                            $("#comments_box").append(comments);
-                        }
+                        insertCTDiv(json);
                     }
                     else {
                         alert("获取数据失败，请检查网络");
@@ -215,6 +218,20 @@
                 }
                 if(self=="1"){
                     $(".del").show();
+                }
+            }
+        );
+        $.get(
+            '${pageContext.request.contextPath}/TopicReadTen.action',
+            url,
+            function(response,status,xhr){
+                if(response!=null){
+                    if( status == "success" ){
+                        response=response.replace(/[\r\n]/g,"");
+                        //response = response.replace(/\s*/g,"");
+                        var json=$.parseJSON(response);
+                        insertCTDiv(json);
+                    }
                 }
             }
         );

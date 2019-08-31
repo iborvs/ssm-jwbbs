@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.uj.ssm.pojo.Topic;
 import com.uj.ssm.pojo.Comm;
 import com.uj.ssm.service.CommService;
@@ -104,13 +107,16 @@ public class CommController {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String owner=request.getParameter("owner");
-        User login_user = userService.getLoginUser(request);
-        if (login_user!=null)
-            owner = login_user.getUsername();
-        else {
-            writer.println("用户未登录");
-            return;
+        if(owner == "" || owner == null || owner=="null"){
+            User login_user = userService.getLoginUser(request);
+            if (login_user!=null)
+                owner = login_user.getUsername();
+            else {
+                writer.println("用户未登录");
+                return;
+            }
         }
+
         List<Comm>lst = commService.GetTenComm(owner);
         int len = lst.size();
         len = min(len, 10);
@@ -122,7 +128,12 @@ public class CommController {
             if(i != 0) {
                        writer.print(", ");
             }
-             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \""+ans.getOwner() + "\" , \"lasttime\" : \""+ans.getLasttime()+"\" , \"content\" : \""+ans.getContent()+"\" , \"topicname\" : \""+topicname+"\" }");
+                  Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+                  //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+                  Matcher matcher=pattern.matcher(ans.getContent());
+                  String content=matcher.replaceAll("<br>");
+
+             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \""+ans.getOwner() + "\" , \"lasttime\" : \""+ans.getLasttime()+"\" , \"content\" : \""+content+"\" , \"topicname\" : \""+topicname+"\" }");
         }
         writer.println("]");
               writer.close();

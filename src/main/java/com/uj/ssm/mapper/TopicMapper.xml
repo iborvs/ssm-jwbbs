@@ -16,6 +16,9 @@
   <select id="TopicReadAll" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
     select * from Topic ORDER BY topicid DESC
   </select>
+  <select id="TopicReadTen" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
+    select * from Topic where owner = #{owner} ORDER BY topicid DESC
+  </select>
   <select id="TopicGetName" parameterType="int" resultType="string" >
     select topicname from Topic where topicid = #{topicid}
   </select>

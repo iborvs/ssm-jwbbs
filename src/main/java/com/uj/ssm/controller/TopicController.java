@@ -75,8 +75,14 @@ public class TopicController {
         }
         Topic topic = new Topic(topicid);
         Topic ans = topicService.TopicRead(topic);
+
+        Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+        //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+        Matcher matcher=pattern.matcher(ans.getContent());
+        String content=matcher.replaceAll("<br>");
+
         //topicname owner starttime lasttime comments topicid content
-        writer.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }]");
+        writer.println("[{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \" "+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" }]");
     }
     //return all topics in json
     //@ResponseBody
@@ -93,7 +99,7 @@ public class TopicController {
             if(i != 0) {
                 writer.print(", ");
             }
-            
+
             Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
             //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
             Matcher matcher=pattern.matcher(ans.getContent());
@@ -103,6 +109,46 @@ public class TopicController {
         }
         writer.println("]");
         }
+
+    @RequestMapping(value = {"/TopicReadTen.action"})
+    public void TopicReadTen(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+
+        String owner = request.getParameter("owner");
+
+        if(owner == "" || owner == null || owner=="null"){
+            User login_user = userService.getLoginUser(request);
+            if (login_user!=null)
+                owner = login_user.getUsername();
+            else {
+                writer.println("用户未登录");
+                return;
+            }
+        }
+
+        Topic ownerT = new Topic();
+        ownerT.setOwner(owner);
+        List<Topic>lst = topicService.TopicReadTen(ownerT);
+        int len = lst.size();
+        writer.println("[");
+        for(int i = 0; i < len; i++){
+            Topic ans = lst.get(i);
+            if(i != 0) {
+                writer.print(", ");
+            }
+
+            Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+            //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+            Matcher matcher=pattern.matcher(ans.getContent());
+            String content=matcher.replaceAll("<br>");
+
+            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" }");
+        }
+        writer.println("]");
+    }
+
     @RequestMapping(value = {"/TopicGetName.action"})
     public void TopicGetName(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
         response.setCharacterEncoding("utf-8");
