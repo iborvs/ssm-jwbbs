@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../resources/css/bootstrap.css">
     <script src="../resources/js/jquery-2.1.4.min.js"></script>
     <script src="../resources/js/bootstrap.js"></script>
+    <script src="../resources/js/gVerify.js"></script>
     <style>
         body{
             background-image: url("../assets/demo-1-bg.jpg");
@@ -77,148 +78,382 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+
+        function newAuthor(topicname, owner, content, starttime){
+            var list = $("#post_list");
+            list.append('        <div class="div_item">\n' +
+                '            <div class="div_item1">\n' +
+                '                <div>\n' +
+                '                    <img src="../../avatar.views?user='+ owner +'" alt="" class="img-circle avatar" style="border: 1px solid black">\n' +
+                '                </div>\n' +
+                '                <div>\n' +
+                '                    <span class="badge">' + owner + '</span>\n' +
+                '                </div>\n' +
+                '                <div>\n' +
+                '                    <span class="badge badge_host">楼主</span>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '            <div class="div_item2 panel panel-default">\n' +
+                '                <div class="panel-heading">\n' +
+                '                    <div>\n' +
+                '                        <h3>' + topicname + '</h3>\n' +
+                '                    </div>\n' +
+                '                    <div class="inline_block">\n' +
+                '                        <span class="glyphicon glyphicon-comment"></span>\n' +
+                '                        <span id="return_num"></span>\n' +
+                '                    </div>\n' +
+                '                    |\n' +
+                '                    <div class="inline_block">\n' +
+                '                        <span>发表于:</span>\n' +
+                '                        <span>' + starttime + '</span>\n' +
+                '                    </div>\n' +
+                '                    <div style="float:right;" class="btn-group">\n' +
+                '                        <button type="button" class="btn btn-default dropdown-toggle bth_" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                '                            编辑 <span class="caret"></span>\n' +
+                '                        </button>\n' +
+                '                        <ul class="dropdown-menu">\n' +
+                '                            <li><a href="#">修改</a></li>\n' +
+                '                            <li><a href="#">删除</a></li>\n' +
+                '                            <li><a href="#">Something else here</a></li>\n' +
+                '                            <li role="separator" class="divider"></li>\n' +
+                '                            <li><a href="#">Separated link</a></li>\n' +
+                '                        </ul>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '                <div class="panel-body">\n' + content +
+                '                </div>\n' +
+                '            </div>\n' +
+                '        </div>');
+        }
+
+        function newAnswerer(owner, lasttime, content){
+            var list = $("#post_list");
+            list.append('<div class="div_item">\n' +
+                '            <div class="div_item1">\n' +
+                '                <div>\n' +
+                '                    <img src="../../avatar.views?user='+ owner +'" alt="" class="img-circle avatar" style="border: 1px solid black">\n' +
+                '                </div>\n' +
+                '                <div>\n' +
+                '                    <span class="badge">' + owner + '</span>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '            <div class="div_item2 panel panel-default">\n' +
+                '                <div class="panel-heading">\n' +
+                '                    <span>回复于:</span>\n' +
+                '                    <span>' + lasttime + '</span>\n' +
+                '                </div>\n' +
+                '                <div class="panel-body">\n' + content +
+                '                </div>\n' +
+                '            </div>\n' +
+                '        </div>');
+        }
+
+
+        var href = location.href;
         $(document).ready(function () {
-            var returns = $("[class='div_item']").length;
-            $("[id='return_num']").text(returns - 1);
-        })
+            $.ajax({
+                type : "get",
+                url : "${pageContext.request.contextPath}/TopicRead.action",
+                data : {topicid : location.search.substring(9)},
+                dataType : "json",
+                async : false,
+                success : function (data) {
+                    $.each(data, function (index, item) {
+                        console.log(data);
+                        newAuthor(item.topicname, item.owner, item.content, item.starttime);
+                    });
+                }
+            });
+            $.ajax({
+                type : "get",
+                url : "${pageContext.request.contextPath}/CommRead.action",
+                data : {topicid : location.search.substring(9)},
+                dataType : "text",
+                async : false,
+                success : function (data) {
+                    data=data.replace(/[\r\n]/g,"");
+                    data = $.parseJSON(data);
+                    $.each(data, function (index, item) {
+                        newAnswerer(item.owner, item.lasttime, item.content);
+                    });
+                }
+            });
+            divide_page();
+        });
+
+        // 以上为获取帖子内容
+
+        var page_num;
+        var item_num;
+        var page_now = 1;
+        function divide_page() {
+            item_num = document.getElementsByClassName("div_item").length;
+            if(parseInt(item_num%8) == 0){
+                page_num = parseInt(item_num/8);
+            }
+            else{
+                page_num = parseInt(item_num/8) + 1;
+            }
+            if(page_num<=4){
+                for(var i=1;i<=page_num;i++){
+                    $(".lastli").before('<li><a class="page" onclick="pageleap(this)">'+i+'</a></li>');
+                }
+            }
+            else{
+                for(var i=1;i<=5;i++){
+                    $(".lastli").before('<li><a class="page" onclick="pageleap(this)">'+i+'</a></li>');
+                }
+            }
+            if(item_num>8){
+                $(".div_item:gt(" + (page_now*8-1) + ")").hide();
+            }
+            signActive();
+        }
+
+        function nextPage() {
+            if(page_now < page_num){
+                $(".div_item:lt(" + page_now*8 + ")").hide();
+                // $(".div_item:gt(" + (page_now*8-1) + "):lt(" + (page_now+1)*8 + ")").show();
+                $(".div_item").slice(page_now*8, (page_now+1)*8).show();
+                page_now++;
+            }
+            pageShift();
+        }
+        function prevPage() {
+            if(page_now == 2){
+                $(".div_item:lt(" + page_now*8 + ")").hide();
+                // $(".div_item:lt(" + (page_now-1)*8 + ")").show();
+                $(".div_item").slice(0, (page_now-1)*8).show();
+                page_now--;
+            }
+            else if(page_now > 2){
+                $(".div_item:lt(" + page_now*8 + ")").hide();
+                $(".div_item").slice((page_now-2)*8, (page_now-1)*8).show();
+                page_now--;
+            }
+            pageShift();
+        }
+
+        function pageleap(self) {
+            var divItem = $(".div_item");
+            page_now = parseInt(self.innerText);
+            if(parseInt(self.innerText) == 1){
+                divItem.hide();
+                // $(".div_item:lt(" + parseInt(self.innerText)*8 + ")").show();
+                divItem.slice(0, parseInt(self.innerText)*8).show();
+            }
+            else{
+                divItem.hide();
+                // console.log(".div_item:gt(" + ((parseInt(self.innerText)-1)*8-1) + "):lt(" + parseInt(self.innerText)*8 + ")");
+                // $(".div_item:gt(" + ((parseInt(self.innerText)-1)*8-1) + "):lt(" + parseInt(self.innerText)*8 + ")").show();
+                divItem.slice((parseInt(self.innerText)-1)*8,parseInt(self.innerText)*8).show();
+            }
+            // $(".page").remove();
+            pageShift();
+        }
+
+        function pageShift() {
+            if(page_num > 5){
+                if(page_now > 3 && page_now < page_num-2){
+                    $(".page").remove();
+                    for(var i=page_now-2;i<=page_now+2;i++){
+                        $(".lastli").before('<li><a class="page" onclick="pageleap(this)">'+ i +'</a></li>');
+                    }
+                }else if(page_now <= 3 && parseInt($(".page").eq(2).innerText) != 3){
+                    $(".page").remove();
+                    for(var i=1;i<=5;i++) {
+                        $(".lastli").before('<li><a class="page" onclick="pageleap(this)">' + i + '</a></li>');
+                    }
+                }else if(page_now >= page_num-2 && parseInt($(".page").eq(2).innerText) != page_num-2){
+                    $(".page").remove();
+                    for(var i=page_num-4;i<=page_num;i++) {
+                        $(".lastli").before('<li><a class="page" onclick="pageleap(this)">' + i + '</a></li>');
+                    }
+                }
+            }
+            signActive();
+        }
+
+        function signActive() {
+            // var reg = /.+#\d+/i;
+            // if(reg.test(document.location.href) == false){
+            //   document.location.href += ("#" + page_now);
+            // }
+            for(var i=0;i<$(".page").length;i++){
+                if(parseInt($(".page")[i].innerText) == page_now){
+                    $(".page").eq(i).parent().addClass("active");
+                }
+                else{
+                    $(".page").eq(i).parent().removeClass("active");
+                }
+            }
+        }
+
+        // 以上为分页
+
+        function create_reply() {
+            var owner = "${cookie.login_user.value}";//不再需要
+            var content = document.getElementById("ReplyContent").value;
+            if(content == ""){
+                alert("内容不能为空！");
+            }else{
+                $.post("${pageContext.request.contextPath}/CommCreate.action", {topicid:location.search.substring(9),owner:owner,content:content}, function () {
+                    alert("发表成功！");
+                    window.location.reload();
+                    // window.location.href = href;
+                });
+            }
+        }
+        // 以上为回复
     </script>
 </head>
 <body>
 <%@include file="header.jsp"%>
 <div class="container">
-    <div class="item_list">
-        <div class="div_item">
-            <div class="div_item1">
-                <div>
-                    <img src="../assets/photo.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">
-                </div>
-                <div>
-                    <span class="badge">用户名</span>
-                </div>
-                <div>
-                    <span class="badge badge_host">楼主</span>
-                </div>
-            </div>
-            <div class="div_item2 panel panel-default">
-                <div class="panel-heading">
-                    <div>
-                        <h3>一次快乐的购物体验</h3>
-                    </div>
-                    <div class="inline_block">
-                        <span class="glyphicon glyphicon-comment"></span>
-                        <span id="return_num"></span>
-                    </div>
-                    |
-                    <div class="inline_block">
-                        <span>发表于:</span>
-                        <span>2016-12-04</span>
-                    </div>
-                    <div style="float:right;" class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle bth_" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            编辑 <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">修改</a></li>
-                            <li><a href="#">删除</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    真的超级喜欢，非常支持，质量非常好，与卖家描述的完全一致，非常满意,真的很喜欢，完全超出期望值，发货速度非常快，包装非常仔细、严实，物流公司服务态度很好，运送速度很快，很满意的一次购物
-                </div>
-            </div>
-        </div>
-        <div class="div_item">
-            <div class="div_item1">
-                <div>
-                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">
-                </div>
-                <div>
-                    <span class="badge">用户名</span>
-                </div>
-            </div>
-            <div class="div_item2 panel panel-default">
-                <div class="panel-heading">
-                    <span>回复于:</span>
-                    <span>2016-9-24</span>
-                </div>
-                <div class="panel-body">
-                    破事水
-                </div>
-            </div>
-        </div>
-        <div class="div_item">
-            <div class="div_item1">
-                <div>
-                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">
-                </div>
-                <div>
-                    <span class="badge">用户名</span>
-                </div>
-            </div>
-            <div class="div_item2 panel panel-default">
-                <div class="panel-heading">
-                    <span>回复于:</span>
-                    <span>2016-9-24</span>
-                </div>
-                <div class="panel-body">
-                    破事水
-                </div>
-            </div>
-        </div>
-        <div class="div_item">
-            <div class="div_item1">
-                <div>
-                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">
-                </div>
-                <div>
-                    <span class="badge">用户名</span>
-                </div>
-            </div>
-            <div class="div_item2 panel panel-default">
-                <div class="panel-heading">
-                    <span>回复于:</span>
-                    <span>2016-9-24</span>
-                </div>
-                <div class="panel-body">
-                    破事水
-                </div>
-            </div>
-        </div>
+    <div class="item_list" id="post_list">
+<%--        <div class="div_item">--%>
+<%--            <div class="div_item1">--%>
+<%--                <div>--%>
+<%--                    <img src="../assets/photo.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">--%>
+<%--                </div>--%>
+<%--                <div>--%>
+<%--                    <span class="badge">用户名</span>--%>
+<%--                </div>--%>
+<%--                <div>--%>
+<%--                    <span class="badge badge_host">楼主</span>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="div_item2 panel panel-default">--%>
+<%--                <div class="panel-heading">--%>
+<%--                    <div>--%>
+<%--                        <h3>一次快乐的购物体验</h3>--%>
+<%--                    </div>--%>
+<%--                    <div class="inline_block">--%>
+<%--                        <span class="glyphicon glyphicon-comment"></span>--%>
+<%--                        <span id="return_num"></span>--%>
+<%--                    </div>--%>
+<%--                    |--%>
+<%--                    <div class="inline_block">--%>
+<%--                        <span>发表于:</span>--%>
+<%--                        <span>2016-12-04</span>--%>
+<%--                    </div>--%>
+<%--                    <div style="float:right;" class="btn-group">--%>
+<%--                        <button type="button" class="btn btn-default dropdown-toggle bth_" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
+<%--                            编辑 <span class="caret"></span>--%>
+<%--                        </button>--%>
+<%--                        <ul class="dropdown-menu">--%>
+<%--                            <li><a href="#">修改</a></li>--%>
+<%--                            <li><a href="#">删除</a></li>--%>
+<%--                            <li><a href="#">Something else here</a></li>--%>
+<%--                            <li role="separator" class="divider"></li>--%>
+<%--                            <li><a href="#">Separated link</a></li>--%>
+<%--                        </ul>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--                <div class="panel-body">--%>
+<%--                    真的超级喜欢，非常支持，质量非常好，与卖家描述的完全一致，非常满意,真的很喜欢，完全超出期望值，发货速度非常快，包装非常仔细、严实，物流公司服务态度很好，运送速度很快，很满意的一次购物--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--        <div class="div_item">--%>
+<%--            <div class="div_item1">--%>
+<%--                <div>--%>
+<%--                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">--%>
+<%--                </div>--%>
+<%--                <div>--%>
+<%--                    <span class="badge">用户名</span>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="div_item2 panel panel-default">--%>
+<%--                <div class="panel-heading">--%>
+<%--                    <span>回复于:</span>--%>
+<%--                    <span>2016-9-24</span>--%>
+<%--                </div>--%>
+<%--                <div class="panel-body">--%>
+<%--                    破事水--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--        <div class="div_item">--%>
+<%--            <div class="div_item1">--%>
+<%--                <div>--%>
+<%--                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">--%>
+<%--                </div>--%>
+<%--                <div>--%>
+<%--                    <span class="badge">用户名</span>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="div_item2 panel panel-default">--%>
+<%--                <div class="panel-heading">--%>
+<%--                    <span>回复于:</span>--%>
+<%--                    <span>2016-9-24</span>--%>
+<%--                </div>--%>
+<%--                <div class="panel-body">--%>
+<%--                    破事水--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--        <div class="div_item">--%>
+<%--            <div class="div_item1">--%>
+<%--                <div>--%>
+<%--                    <img src="../assets/photo2.jpg" alt="" class="img-circle avatar" style="border: 1px solid black">--%>
+<%--                </div>--%>
+<%--                <div>--%>
+<%--                    <span class="badge">用户名</span>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="div_item2 panel panel-default">--%>
+<%--                <div class="panel-heading">--%>
+<%--                    <span>回复于:</span>--%>
+<%--                    <span>2016-9-24</span>--%>
+<%--                </div>--%>
+<%--                <div class="panel-body">--%>
+<%--                    破事水--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
     </div>
     <nav aria-label="Page navigation" style="text-align: center">
         <ul class="pagination">
             <li>
-                <a href="#" aria-label="Previous">
+                <a aria-label="Previous" class="prev" onclick="prevPage()">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li class="active"><span href="#">1</span></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+            <li class="lastli">
+                <a aria-label="Next" class="next" onclick="nextPage()">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
+<%--    <nav aria-label="Page navigation" style="text-align: center">--%>
+<%--        <ul class="pagination">--%>
+<%--            <li>--%>
+<%--                <a href="#" aria-label="Previous">--%>
+<%--                    <span aria-hidden="true">&laquo;</span>--%>
+<%--                </a>--%>
+<%--            </li>--%>
+<%--            <li class="active"><span href="#">1</span></li>--%>
+<%--            <li><a href="#">2</a></li>--%>
+<%--            <li><a href="#">3</a></li>--%>
+<%--            <li><a href="#">4</a></li>--%>
+<%--            <li><a href="#">5</a></li>--%>
+<%--            <li>--%>
+<%--                <a href="#" aria-label="Next">--%>
+<%--                    <span aria-hidden="true">&raquo;</span>--%>
+<%--                </a>--%>
+<%--            </li>--%>
+<%--        </ul>--%>
+<%--    </nav>--%>
     <div class="reply">
         <form>
             <div>
                 <h4><span class="glyphicon glyphicon-pencil"></span>发表回复</h4>
             </div>
-            <div>
-                <textarea class="form-control" rows="9" style="resize: none;" placeholder="发表一下你的看法" required></textarea>
-            </div>
             <div class="form-group">
-                <label for="InputFile">上传图片</label>
-                <input type="file" id="InputFile" title="?">
+                <textarea class="form-control" rows="9" style="resize: none;" placeholder="发表一下你的看法" id="ReplyContent"></textarea>
             </div>
             <div>
                 <div id="v_container"></div>
@@ -227,7 +462,20 @@
             <div>
                 <button type="submit" class="btn btn-default" id="my_button"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;发表</button>
             </div>
-            <script src="../resources/js/gVerify.js"></script>
+            <script>
+                var verifyCode = new GVerify("v_container");
+                document.getElementById("my_button").onclick = function(){
+                    var res = verifyCode.validate(document.getElementById("code_input").value);
+                    if(res){
+                        create_reply();
+                        return false;
+                    }else{
+                        alert("验证码错误！");
+                        // window.location.href = href;
+                        return false;
+                    }
+                };
+            </script>
         </form>
     </div>
 </div>

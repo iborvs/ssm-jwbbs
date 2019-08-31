@@ -43,7 +43,6 @@
                     <div class="row">
                         <div class="mx-auto user-info ">
                             <div id="profile">
-                                <% long date = new Date().getTime(); request.setAttribute("date", date); %>
                                 <form method="POST" enctype="multipart/form-data" id="uploadFrm">
                                     <div class="mx-auto">
                                         <div id="preview"><img id="avatarPreview" class="avatar" src="../../assets/mmm.png"/></div>

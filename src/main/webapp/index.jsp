@@ -64,6 +64,7 @@
     });
 
     function newTopic(topicname, owner, content, topicid){
+      topicid = topicid.replace(" ", "");
       var list = $("#list");
       list.append('<div class="div_item">' +
               '      <div class="div_item1 visible-md-inline-block visible-lg-inline-block">' +
@@ -76,7 +77,7 @@
               '      </div>' +
               '      <div class="div_item2">' +
               '        <div>' +
-              '          <h3 class="item_h3"><a href="views/PostPage.jsp?topicid=' + topicid + '" class="item_a">' + topicname + '</a></h3>' +
+              '          <h3 class="item_h3"><a href="topic.views?topicid=' + topicid + '" class="item_a">' + topicname + '</a></h3>' +
               '        </div>' +
               '        <div>' +
               '          <p>' + content + '</p>' +

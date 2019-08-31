@@ -137,13 +137,3 @@
 	window.GVerify = GVerify;
 })(window, document);
 
-var verifyCode = new GVerify("v_container");
-		document.getElementById("my_button").onclick = function(){
-			var res = verifyCode.validate(document.getElementById("code_input").value);
-			if(res){
-				return true;
-			}else{
-				console.log("error!!!");
-				return false;
-			}
-		};

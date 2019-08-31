@@ -93,7 +93,7 @@ public class CommController {
             if(i != 0) {
                 writer.print(", ");
             }
-           writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+           writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \""+ans.getOwner() + "\" , \"lasttime\" : \""+ans.getLasttime()+"\" , \"content\" : \""+ans.getContent()+"\" }");
         }
         writer.println("]");
     }
@@ -122,7 +122,7 @@ public class CommController {
             if(i != 0) {
                        writer.print(", ");
             }
-             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \" "+ans.getOwner() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"content\" : \" "+ans.getContent()+"\" , \"topicname\" : \" "+topicname+"\" }");
+             writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \""+ans.getOwner() + "\" , \"lasttime\" : \""+ans.getLasttime()+"\" , \"content\" : \""+ans.getContent()+"\" , \"topicname\" : \""+topicname+"\" }");
         }
         writer.println("]");
               writer.close();

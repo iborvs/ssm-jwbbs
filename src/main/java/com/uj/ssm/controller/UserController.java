@@ -46,21 +46,21 @@ public class UserController {
 		if(state==1){
 			HttpSession session = request.getSession(true);
 			session.setAttribute("login_user",username);
-			Cookie cookie=new Cookie("login_user", username);
-			cookie.setMaxAge(7*24*60*60);
-			response.addCookie(cookie);
+			//Cookie cookie=new Cookie("login_user", username);
+			//cookie.setMaxAge(7*24*60*60);
+			//response.addCookie(cookie);
 			//设置头像与默认头像cookie
-			String filePath=request.getServletContext().getRealPath("/");
-			String realPath = filePath+"public/avatar/"+ username+".png";
-			System.out.println(realPath);
-			File file=new File(realPath);
-			String avatarName="iborvs";
-			if(file.exists()&&file.isFile()){
-				avatarName = username;
-			}
-			Cookie imgcookie=new Cookie("userimg", avatarName);
-			cookie.setMaxAge(7*24*60*60);
-			response.addCookie(imgcookie);
+			//String filePath=request.getServletContext().getRealPath("/");
+			//String realPath = filePath+"public/avatar/"+ username+".png";
+			//System.out.println(realPath);
+			//File file=new File(realPath);
+			//String avatarName="iborvs";
+			//if(file.exists()&&file.isFile()){
+			//	avatarName = username;
+			//}
+			//Cookie imgcookie=new Cookie("userimg", avatarName);
+			//cookie.setMaxAge(7*24*60*60);
+			//response.addCookie(imgcookie);
 			writer.println("success");
 		}else{
 			writer.println("failed");

@@ -110,7 +110,7 @@ public class ViewsController {
 				return  "../public/avatar/" + username + ".png";
 			}
 		}
-		return "../public/avatar/iborvs.png";
+		return "../public/avatar/default.png";
 	}
 	@RequestMapping(value =  {"/topic.views"})
 	public String getTopicContent(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
