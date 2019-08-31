@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.uj.ssm.pojo.Topic;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -90,7 +93,13 @@ public class TopicController {
             if(i != 0) {
                 writer.print(", ");
             }
-           writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+ans.getContent()+"\" }");
+            
+            Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+            //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+            Matcher matcher=pattern.matcher(ans.getContent());
+            String content=matcher.replaceAll("<br>");
+
+           writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" }");
         }
         writer.println("]");
         }

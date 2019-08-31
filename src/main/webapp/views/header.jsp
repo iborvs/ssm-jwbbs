@@ -34,13 +34,25 @@
                 <li class="dropdown">
                     <a href="profile.views" style="padding: 0;" data-toggle="tooltip" data-placement="bottom" title="个人中心"><img src="../../avatar.views?${date}" class="avatar_box img-circle"></a>
                 </li>
-                <li><a href="/newTopic.views">发帖</a></li>
-                <li><a href="/login.views">登录</a></li>
+                <li id="topic_li"><a href="/newTopic.views">发帖</a></li>
+                <li id="login_li"><a href="/login.views">登录</a></li>
                 <li><a href="/register.views">注册</a></li>
             </ul>
 
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<script>
+    $.get("${pageContext.request.contextPath}/login.if",function (data) {
+        var test = /success/.test(data);
+        if(test == true){
+            $("#topic_li").removeClass("hidden");
+            $("#login_li").addClass("hidden");
+        }else{
+            $("#topic_li").addClass("hidden");
+            $("#login_li").removeClass("hidden");
+        }
+    });
+</script>
 </body>
 </html>

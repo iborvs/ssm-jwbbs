@@ -22,10 +22,11 @@
         .reply{
             border:1px solid black;
             border-radius: 4px;
-            padding: 0 1% 1% 1%;
+            padding: 1% 1% 1% 1%;
+            margin-top: 9%;
             margin-bottom: 1%;
             background-color: white;
-            opacity: 0.92;
+            opacity: 0.96;
         }
         #v_container{
             width: 100px;
@@ -65,6 +66,7 @@
                 <input type="text" class="form-control" id="InputTopic" name="topicname" placeholder="帖子题目">
             </div>
             <div class="form-group">
+                <label for="InputContent">内容</label>
                 <textarea class="form-control" rows="9" style="resize: none;" placeholder="发表一下你的看法" id="InputContent" name="content"></textarea>
             </div>
             <div>
