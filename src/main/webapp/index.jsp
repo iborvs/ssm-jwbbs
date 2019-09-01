@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>index</title>
+  <title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="resources/css/bootstrap.css">
   <script src="resources/js/jquery-2.1.4.min.js"></script>
@@ -39,6 +39,7 @@
     }
     .div_item1{
       text-align: center;
+        width: 80px;
     }
     .div_item2{
       display: inline-block;
@@ -48,7 +49,7 @@
       max-width: 100%;
     }
     .avatar_user{
-
+        overflow: auto;
     }
     .item_h3{
       margin-top: 0;
@@ -64,12 +65,13 @@
     });
 
     function newTopic(topicname, owner, content, topicid){
+      var num = Math.random();
       topicid = topicid.replace(" ", "");
       var list = $("#list");
       list.append('<div class="div_item">' +
               '      <div class="div_item1 visible-md-inline-block visible-lg-inline-block">' +
               '        <div>' +
-              '          <a href="profile.views?user='+owner+'"><img src="../../avatar.views?user='+ owner +'" alt="" class="avatar img-thumbnail"></a>' +
+              '          <a href="profile.views?user='+owner+'"><img src="../../avatar.views?user='+ owner +'&'+num+'" alt="" class="avatar img-thumbnail"></a>' +
               '        </div>' +
               '        <div class="avatar_user">' +
               '          <span class="badge">' + owner + '</span>' +
@@ -85,6 +87,7 @@
               '      </div>' +
               '    </div>');
     }
+
 
     $(document).ready(function () {
       $.ajax({
@@ -220,9 +223,17 @@
 <div class="jumbotron">
 </div>
 <div class="container">
+  <div class="col-sm-4" style="margin-bottom: 20px;float: right">
+    <div class="input-group">
+      <input type="text" class="form-control" id="searchInput" datatype="s1-10" />
+      <span class="input-group-addon"><i class="glyphicon glyphicon-search" onclick="search()"></i></span>
+    </div>
+    </div>
+</div>
+<div class="container">
   <div class="header">
-    <header style="display: inline-block">热帖</header>
-    <a href="#" style="float: right;color: #fff;">更多&raquo;</a>
+    <header style="display: inline-block">主页</header>
+    <a href="#" style="float: right;color: #fff;"></a>
   </div>
   <div class="div_list" id="list">
 
@@ -242,5 +253,36 @@
     </ul>
   </nav>
 </div>
+<script>
+  function search() {
+    if($("#searchInput").val()!=""){
+      $.ajax({
+        type : "get",
+        url : "${pageContext.request.contextPath}/search.action",
+        data:"content="+$("#searchInput").val(),
+        dataType : "json",
+        async : false,
+        success : function (data) {
+          if($.isEmptyObject(data)){
+            alert("没有合适的结果!");
+            return;
+          }
+          alert("查询成功!");
+          $(".div_item").remove();
+          $(".pagination").hide();
+          $.each(data, function (index, item) {
+            var simple_text;
+            if(item.content.length > 25){
+              simple_text = item.content.slice(0,25) + "...";
+            }else{
+              simple_text = item.content;
+            }
+            newTopic(item.topicname, item.owner, simple_text, item.topicid);
+          });
+        }
+      });
+    }
+  }
+</script>
 </body>
 </html>

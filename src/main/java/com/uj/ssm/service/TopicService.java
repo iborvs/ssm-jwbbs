@@ -10,4 +10,5 @@ public interface TopicService {
     public List<Topic> TopicReadTen(Topic topic);
     public String TopicGetName(int topicid);
     public int TopicDelete(int topicid);
+    public List<Topic> TopicSearch(Topic topic);
 }

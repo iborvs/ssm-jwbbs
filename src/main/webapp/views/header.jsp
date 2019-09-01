@@ -36,7 +36,8 @@
                 </li>
                 <li id="topic_li"><a href="/newTopic.views">发帖</a></li>
                 <li id="login_li"><a href="/login.views">登录</a></li>
-                <li><a href="/register.views">注册</a></li>
+                <li id="logout_li"><a id="logout_a" href="">登出</a></li>
+                <li id="register_li"><a href="/register.views">注册</a></li>
             </ul>
 
         </div><!-- /.navbar-collapse -->
@@ -48,11 +49,20 @@
         if(test == true){
             $("#topic_li").removeClass("hidden");
             $("#login_li").addClass("hidden");
+            $("#logout_li").removeClass("hidden");
+            $("#register_li").addClass("hidden");
         }else{
             $("#topic_li").addClass("hidden");
             $("#login_li").removeClass("hidden");
+            $("#logout_li").addClass("hidden");
+            $("#register_li").removeClass("hidden");
         }
     });
+    document.getElementById("logout_li").onclick = function() {
+        $.get("${pageContext.request.contextPath}/logout.action",function (data) {
+            alert("登出账号成功！");
+        });
+    }
 </script>
 </body>
 </html>

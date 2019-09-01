@@ -35,6 +35,7 @@ public class CommServicelmpl implements CommService {
         String owner = commMapper.CommReadOwner(commentid);
         return owner;
     }
+
     //private TopicMapper topicMapper;
 
 }

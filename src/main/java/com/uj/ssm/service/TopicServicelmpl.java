@@ -43,5 +43,8 @@ public class TopicServicelmpl implements TopicService {
         int state = topicMapper.TopicDelete(topicid);
         return state;
     }
-
+    public List<Topic> TopicSearch(Topic topic){
+        List<Topic>lst = topicMapper.TopicSearch(topic);
+        return lst;
+    }
 }

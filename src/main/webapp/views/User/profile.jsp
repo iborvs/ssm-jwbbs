@@ -81,8 +81,13 @@
                             </div>
                         </div>
                         <div class="user-info-panel">
-                            <h4>最近发帖:</h4>
+                            <h4>最近回帖:</h4>
                             <div id = "comments_box">
+                            </div>
+                        </div>
+                        <div class="user-info-panel">
+                            <h4>最近发帖:</h4>
+                            <div id = "topic_box">
                             </div>
                         </div>
                     </div>
@@ -102,6 +107,7 @@
                 if(json[0].status.indexOf("success")!=-1){
                     if(GetQueryString("user")!=null)
                         $("#banArea").show();
+                        $(".del").show();
                 }
             }
         );
@@ -135,36 +141,46 @@
     function pageReload() {
         location.reload();
     }
-    function confirmDel(para){
+    function confirmDel(para,type){
         if(window.confirm('确定要删除此条回复么？')){
            var url = "/CommDelete.action";
+           var data = 'commentid=';
+           if(type=="1"){
+               url = "/TopicDelete.action";
+               data = "topicid=";
+           }
             $.get(
                 url,
-                'commentid='+para,
+                data+para,
                 function (response,status) {
                     if(response!=null){
                         if(status="success")
                             alert("删除成功！");
+                        pageReload();
                     }
                     else{
                         alert("网络异常");
+                        pageReload();
                     }
 
                 }
             );
         }
     }
-    function insertCTDiv(json) {
+    function insertCTDiv(json,name) {
+        var type = 0;
+        if(name=="#topic_box")
+            type = 1;
         for (var i = 0; i < json.length; i++) {
             var comments = "<div class=\"div_item\">" +
                 "                                <div class=\"div_item2 panel panel-default\">" +
                 "                                    <div class=\"panel-heading\">" +
                 "                                        <span>回复:</span>" +
-                "                                        <a src=\""+  json[i].topicid +"\">"+json[i].topicname+"</a>" +
+                "                                        <a href=\"topic.views?topicid="+  json[i].topicid +"\">"+json[i].topicname+"</a>" +
                 "                                        <div style=\"float: right\">" +
                 "                                            <span>回复于:</span>" +
                 "                                            <span>"+ json[i].lasttime +"</span>" +
-                "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\')\">删除</a>"+
+                "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\',"+type+")\">删除</a>"+
                 "                                        </div>" +
                 "                                    </div>" +
                 "                                    <div class=\"panel-body\">" +
@@ -172,15 +188,15 @@
                 "                                    </div>" +
                 "                                </div>" +
                 "                            </div>";
-            $("#comments_box").append(comments);
+            $(name).append(comments);
         }
     }
     function getUserComments(){
+        var self = "0";
         var user="";
         var url="";
         if(GetQueryString("user")!=null)
             user = GetQueryString("user");
-        var self = "0";
         if(user!="")
             url = 'user='+user;
         else
@@ -210,7 +226,9 @@
                         response=response.replace(/[\r\n]/g,"");
                         //response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
-                        insertCTDiv(json);
+                        if(response=="[]")
+                            $("#comments_box").append("<br/><h4>无</h4><br/>");
+                        insertCTDiv(json,"#comments_box");
                     }
                     else {
                         alert("获取数据失败，请检查网络");
@@ -230,7 +248,9 @@
                         response=response.replace(/[\r\n]/g,"");
                         //response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
-                        insertCTDiv(json);
+                        if(response=="[]")
+                            $("#topic_box").append("<br/><h4>无</h4><br/>");
+                        insertCTDiv(json,"#topic_box");
                     }
                 }
             }

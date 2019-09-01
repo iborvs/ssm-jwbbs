@@ -25,4 +25,7 @@
   <delete id="TopicDelete" parameterType="int" >
     delete from Topic where topicid = #{topicid}
   </delete>
+  <select id="TopicSearch" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
+    select * from Topic where topicname like CONCAT('%',#{content},'%') or content like CONCAT('%',#{content},'%')
+  </select>
 </mapper>

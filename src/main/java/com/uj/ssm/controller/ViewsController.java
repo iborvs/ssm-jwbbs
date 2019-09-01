@@ -3,6 +3,8 @@ package com.uj.ssm.controller;
 import com.uj.ssm.MD5;
 import com.uj.ssm.imagedeal;
 import com.uj.ssm.pojo.User;
+import com.uj.ssm.service.CommService;
+import com.uj.ssm.service.TopicService;
 import com.uj.ssm.service.UserService;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -28,7 +30,10 @@ public class ViewsController {
 	
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private CommService commService;
+	@Autowired
+	private TopicService topicService;
 	@RequestMapping(value = {"/userInfo.views"})
 	public String userInfo(Model model,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		response.setContentType("text/html;charset=utf-8");
@@ -87,7 +92,7 @@ public class ViewsController {
 		}
 		else {
 			//request.setAttribute("error","0");
-			return "redirect:/views/welcome.blade.jsp?error=0";
+			return "redirect:login.views";
 			//request.getRequestDispatcher("redirect:/views/welcome.blade.jsp?error=0").forward(request, response);
 		}
 	}

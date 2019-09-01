@@ -191,4 +191,28 @@ public class TopicController {
             writer.println("access denied");
         }
     }
+    @RequestMapping(value = {"search.action"})
+    public void TopicSearch(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html;charset=utf-8");
+        String sContent = request.getParameter("content");
+        PrintWriter writer = response.getWriter();
+        Topic sTopic = new Topic();
+        sTopic.setContent(sContent);
+        List<Topic>lst = topicService.TopicSearch(sTopic);
+        int len = lst.size();
+        writer.println("[");
+        for(int i = 0; i < len; i++){
+            Topic ans = lst.get(i);
+            if(i != 0) {
+                writer.print(", ");
+            }
+            Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+            //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+            Matcher matcher=pattern.matcher(ans.getContent());
+            String content=matcher.replaceAll("<br>");
+            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" }");
+        }
+        writer.println("]");
+    }
 }

@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
 	
 	//查询商品列表
 	public int userLogin(User loginUser){
+		loginUser.setUsername(StringEscapeUtils.escapeHtml4(loginUser.getUsername()));
 		List<User> users = UserMapper.login(loginUser);
 		int state = 0 ;
 		if(users.size()!=0){
