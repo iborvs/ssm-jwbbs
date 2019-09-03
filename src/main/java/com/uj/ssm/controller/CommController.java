@@ -96,6 +96,10 @@ public class CommController {
             if(i != 0) {
                 writer.print(", ");
             }
+            Pattern pattern=Pattern.compile("(\r\n|\r|\n|\n\r)");
+            //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
+            Matcher matcher=pattern.matcher(ans.getContent());
+            String content=matcher.replaceAll("<br>");
            writer.println("{ \"topicid\" : \""+ans.getTopicid()+"\",\"commentid\": \""+ans.getCommentid()+"\" , \"owner\" : \""+ans.getOwner() + "\" , \"lasttime\" : \""+ans.getLasttime()+"\" , \"content\" : \""+ans.getContent()+"\" }");
         }
         writer.println("]");
@@ -154,8 +158,18 @@ public class CommController {
         User requestUser = new User();
         requestUser.setUsername(owner);
         boolean ok = userService.legalUser(request, requestUser);
-        if(ok == true)
+        if(ok == true) {
+            Comm newComm = commService.CommFind(commentid);
+            Topic newTopic = new Topic(newComm.getTopicid());
+            newTopic = topicService.TopicRead(newTopic);
+            List<Comm> commOfNewTopic = commService.CommRead(newTopic.getTopicid());
+            if(commOfNewTopic.size()>1)
+                newTopic.setLasttime(commOfNewTopic.get(commOfNewTopic.size()-1).getLasttime());
+            else
+                newTopic.setLasttime(newTopic.getStarttime());
+            topicService.TopicMinus(newTopic);
             commService.CommDelete(commentid);
+        }
         else{
             writer.println("access denied");
         }

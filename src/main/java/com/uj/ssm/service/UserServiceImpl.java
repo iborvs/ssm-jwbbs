@@ -58,10 +58,12 @@ public class UserServiceImpl implements UserService {
 	public boolean legalUser(HttpServletRequest request,User requestUser){ //request用于判断当前登录用户，request用于判断被操作的用户----
 		HttpSession session = request.getSession(true);          //---判断一个用户时候被封禁时两个参数填同一用户就好
 		User legalUs = new User();
-		requestUser = UserMapper.findUser(requestUser).get(0);
-		if(requestUser ==null)  //请求用户不存在
+		List<User> resultUser ;
+		resultUser = UserMapper.findUser(requestUser);
+		if(resultUser.size()==0)  //请求用户不存在
 			return false;
-		else if(requestUser.getPrivileges()==-1) //请求用户被禁止
+		requestUser = UserMapper.findUser(requestUser).get(0);
+		if(requestUser.getPrivileges()==-1) //请求用户被禁止
 			return false;
 		if(session.getAttribute("login_user")!=null){
 			legalUs.setUsername(session.getAttribute("login_user").toString());

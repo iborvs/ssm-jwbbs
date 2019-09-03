@@ -10,11 +10,14 @@
   <update id="TopicKeep" parameterType="com.uj.ssm.pojo.Topic" >
   update Topic SET lasttime = #{lasttime}, comments = comments + 1 where topicid = #{topicid}
   </update>
+  <update id="TopicMinus" parameterType="com.uj.ssm.pojo.Topic" >
+  update Topic SET lasttime = #{lasttime},comments = comments - 1 where topicid = #{topicid}
+  </update>
   <select id="TopicRead" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
     select * from Topic where topicid = #{topicid}
   </select>
   <select id="TopicReadAll" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
-    select * from Topic ORDER BY topicid DESC
+    select * from Topic ORDER BY lasttime DESC
   </select>
   <select id="TopicReadTen" parameterType="com.uj.ssm.pojo.Topic" resultType="com.uj.ssm.pojo.Topic" >
     select * from Topic where owner = #{owner} ORDER BY topicid DESC

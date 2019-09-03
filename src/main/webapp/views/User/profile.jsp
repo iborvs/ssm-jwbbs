@@ -106,7 +106,7 @@
                 var json=$.parseJSON(response);
                 if(json[0].status.indexOf("success")!=-1){
                     if(GetQueryString("user")!=null)
-                        $("#banArea").show();
+                            $("#banArea").show();
                         $(".del").show();
                 }
             }
@@ -172,6 +172,9 @@
         if(name=="#topic_box")
             type = 1;
         for (var i = 0; i < json.length; i++) {
+            var id =json[i].commentid;
+            if(name=="#topic_box")
+                id = json[i].topicid;
             var comments = "<div class=\"div_item\">" +
                 "                                <div class=\"div_item2 panel panel-default\">" +
                 "                                    <div class=\"panel-heading\">" +
@@ -180,7 +183,7 @@
                 "                                        <div style=\"float: right\">" +
                 "                                            <span>回复于:</span>" +
                 "                                            <span>"+ json[i].lasttime +"</span>" +
-                "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ json[i].commentid +"\',"+type+")\">删除</a>"+
+                "                                        <a class='del' style='display: none' onclick=\"confirmDel(\'"+ id +"\',"+type+")\">删除</a>"+
                 "                                        </div>" +
                 "                                    </div>" +
                 "                                    <div class=\"panel-body\">" +
@@ -201,6 +204,7 @@
             url = 'user='+user;
         else
             url = "";
+        $.ajaxSettings.async = false;
         $.get(
             '/legal.if',
             url,
@@ -213,6 +217,7 @@
                 }
             }
         );
+        $.ajaxSettings.async = true;
         if(user!="")
             url = 'owner='+user;
         else

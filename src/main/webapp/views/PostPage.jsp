@@ -81,12 +81,13 @@
         });
 
 
-        function newAuthor(topicname, owner, content, starttime){
+        function newAuthor(topicname, owner, content, starttime,id){
+            var num = Math.random();
             var list = $("#post_list");
             list.append('        <div class="div_item">\n' +
                 '            <div class="div_item1">\n' +
                 '                <div>\n' +
-                '                    <img src="../../avatar.views?user='+ owner +'" alt="" class="img-circle avatar" style="border: 1px solid black">\n' +
+                '                    <a href="profile.views?user='+owner+'"><img src="../../avatar.views?user='+ owner +'&date='+num+'" alt="" class="img-circle avatar" style="border: 1px solid black"></a>\n' +
                 '                </div>\n' +
                 '                <div>\n' +
                 '                    <span class="badge">' + owner + '</span>\n' +
@@ -109,6 +110,7 @@
                 '                        <span>发表于:</span>\n' +
                 '                        <span>' + starttime + '</span>\n' +
                 '                    </div>\n' +
+                '<a class="del" style="float:right" onclick="confirmDel(\''+ id +'\',1)">删除</a>'+
                 '                </div>\n' +
                 '                <div class="panel-body">\n' + content +
                 '                </div>\n' +
@@ -117,11 +119,12 @@
         }
 
         function newAnswerer(owner, lasttime, content,id){
+            var num = Math.random();
             var list = $("#post_list");
             list.append('<div class="div_item">\n' +
                 '            <div class="div_item1">\n' +
                 '                <div>\n' +
-                '                    <img src="../../avatar.views?user='+ owner +'" alt="" class="img-circle avatar" style="border: 1px solid black">\n' +
+                '                    <a href="profile.views?user='+owner+'"><img src="../../avatar.views?user='+ owner +'&date='+num+'" alt="" class="img-circle avatar" style="border: 1px solid black"></a>\n' +
                 '                </div>\n' +
                 '                <div>\n' +
                 '                    <span class="badge">' + owner + '</span>\n' +
@@ -131,7 +134,7 @@
                 '                <div class="panel-heading">\n' +
                 '                    <span>回复于:</span>\n' +
                 '                    <span>' + lasttime + '</span>\n' +
-                    '<a class="del" style="float: right" onclick="confirmDel(\''+ id +'\',0)">删除</a>'+
+                    '<a class="del" style="float:right" onclick="confirmDel(\''+ id +'\',0)">删除</a>'+
                 '                </div>\n' +
                 '                <div class="panel-body">\n' + content +
                 '                </div>\n' +
@@ -151,7 +154,7 @@
                 success : function (data) {
                     $.each(data, function (index, item) {
                         console.log(data);
-                        newAuthor(item.topicname, item.owner, item.content, item.starttime);
+                        newAuthor(item.topicname, item.owner, item.content, item.starttime,item.topicid);
                     });
                 }
             });

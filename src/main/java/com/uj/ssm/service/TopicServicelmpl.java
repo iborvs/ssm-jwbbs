@@ -21,6 +21,10 @@ public class TopicServicelmpl implements TopicService {
         int state = topicMapper.TopicKeep(topic);
         return state;
     }
+    public int TopicMinus(Topic topic){
+        int state = topicMapper.TopicMinus(topic);
+        return state;
+    }
     //Topicname owner starttime lasttime comments topicid
     public Topic TopicRead(Topic topic){
         Topic ans = topicMapper.TopicRead(topic);

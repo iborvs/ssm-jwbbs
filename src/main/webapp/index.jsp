@@ -64,7 +64,7 @@
       $('[data-toggle="tooltip"]').tooltip();
     });
 
-    function newTopic(topicname, owner, content, topicid){
+    function newTopic(topicname, owner, content, topicid,lasttime,comments){
       var num = Math.random();
       topicid = topicid.replace(" ", "");
       var list = $("#list");
@@ -80,6 +80,14 @@
               '      <div class="div_item2">' +
               '        <div>' +
               '          <h3 class="item_h3"><a href="topic.views?topicid=' + topicid + '" class="item_a">' + topicname + '</a></h3>' +
+              '<div style="font-weight:bold;margin-bottom: 10px">'+
+              '                    <div class="inline_block">\n' +
+              '                        <span>回复于:</span>\n' +
+              '                        <span>' + lasttime + '</span>\n' +
+              '                        <span>回帖数:</span>\n' +
+              '                        <span>' + comments + '</span>\n' +
+              '                    </div>\n' +
+              '</div>'+
               '        </div>' +
               '        <div>' +
               '          <p>' + content + '</p>' +
@@ -104,7 +112,7 @@
             }else{
                 simple_text = item.content;
             }
-            newTopic(item.topicname, item.owner, simple_text, item.topicid);
+            newTopic(item.topicname, item.owner, simple_text, item.topicid,item.lasttime,item.comments);
           });
         }
       });
@@ -226,7 +234,7 @@
   <div class="col-sm-4" style="margin-bottom: 20px;float: right">
     <div class="input-group">
       <input type="text" class="form-control" id="searchInput" datatype="s1-10" />
-      <span class="input-group-addon"><i class="glyphicon glyphicon-search" onclick="search()"></i></span>
+      <span class="input-group-addon"><i class="glyphicon glyphicon-search" onclick="search();"></i></span>
     </div>
     </div>
 </div>
@@ -261,7 +269,6 @@
         url : "${pageContext.request.contextPath}/search.action",
         data:"content="+$("#searchInput").val(),
         dataType : "json",
-        async : false,
         success : function (data) {
           if($.isEmptyObject(data)){
             alert("没有合适的结果!");
@@ -269,7 +276,7 @@
           }
           alert("查询成功!");
           $(".div_item").remove();
-          $(".pagination").hide();
+          $(".pagination").css("visibility","hidden");
           $.each(data, function (index, item) {
             var simple_text;
             if(item.content.length > 25){
@@ -277,7 +284,7 @@
             }else{
               simple_text = item.content;
             }
-            newTopic(item.topicname, item.owner, simple_text, item.topicid);
+            newTopic(item.topicname, item.owner, simple_text, item.topicid,item.lasttime,item.comments);
           });
         }
       });

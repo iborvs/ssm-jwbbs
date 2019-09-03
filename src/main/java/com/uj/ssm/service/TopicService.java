@@ -5,6 +5,7 @@ import com.uj.ssm.pojo.Topic;
 public interface TopicService {
     public int TopicCreate(Topic topic);
     public int TopicKeep(Topic topic);
+    public int TopicMinus(Topic topic);
     public Topic TopicRead(Topic topic);
     public List<Topic> TopicReadAll();
     public List<Topic> TopicReadTen(Topic topic);

@@ -15,13 +15,15 @@ function confirmDel(para,type){
                         alert("无权限！");
                     else
                         alert("删除成功！");
-                    location.reload();
+                    if(type=="1")
+                        window.location.href="/";
+                    else
+                        location.reload();
                 }
                 else{
                     alert("网络异常！");
                     location.reload();
                 }
-
             }
         );
     }
