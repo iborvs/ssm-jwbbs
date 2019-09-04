@@ -291,9 +291,12 @@
             if(content == ""){
                 alert("内容不能为空！");
             }else{
-                $.post("${pageContext.request.contextPath}/CommCreate.action", {topicid:location.search.substring(9),owner:owner,content:content}, function () {
-                    alert("发表成功！");
-                    window.location.reload();
+                $.post("${pageContext.request.contextPath}/CommCreate.action", {topicid:location.search.substring(9),owner:owner,content:content}, function (response) {
+                    if(response.indexOf("封禁")==-1)
+                        alert("发表成功！");
+                    else
+                        alert("您已被封禁！");
+                    location.reload();
                     // window.location.href = href;
                 });
             }

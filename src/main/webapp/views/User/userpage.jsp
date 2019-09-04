@@ -51,7 +51,9 @@
                                     </div>
                                     <div class="mx-auto">
                                         <input class="btn btn-success" type="button" name="submit" value="保存修改" onclick="update()">
-                                        <input class="btn btn-info" type="button" name="submit" value="返回" onclick="update()">
+                                        <a href="/profile.views">
+                                        <input class="btn btn-info" type="button" name="submit" value="返回" >
+                                        </a>
                                     </div>
                                 </form>
                             </div>

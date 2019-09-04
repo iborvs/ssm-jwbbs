@@ -13,7 +13,7 @@
     select * from comments where commentid = #{commentid}
   </select>
   <select id="GetTenComm" parameterType="String" resultType="com.uj.ssm.pojo.Comm" >
-    select * from comments where owner = #{owner}
+    select * from comments where owner = #{owner} ORDER BY lasttime DESC
   </select>
   <select id="CommReadOwner" parameterType="int" resultType="String" >
     select owner from comments where commentid = #{commentid}

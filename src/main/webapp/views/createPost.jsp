@@ -46,15 +46,20 @@
             }else if(content == ""){
                 alert("内容不能为空！");
             }else{
-                $.post("${pageContext.request.contextPath}/TopicCreate.action", {topicname:topicname,owner:owner,content:content}, function () {
-                    alert("发表成功！");
-                    window.location.href = "/";
+                $.post("${pageContext.request.contextPath}/TopicCreate.action", {topicname:topicname,owner:owner,content:content}, function (response) {
+                    if(response.indexOf("封禁")==-1){
+                        alert("发表成功！");
+                        window.location.href = "/";
+                    }
+                    else
+                        alert("您已被封禁！");
                 });
             }
         }
     </script>
 </head>
 <body>
+<%@include file="header.jsp"%>
 <div class="container">
     <div class="reply">
         <form>

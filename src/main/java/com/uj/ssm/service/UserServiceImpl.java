@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper UserMapper;
 	
-	//查询商品列表
+
 	public int userLogin(User loginUser){
 		loginUser.setUsername(StringEscapeUtils.escapeHtml4(loginUser.getUsername()));
 		List<User> users = UserMapper.login(loginUser);
@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public int userRegister(User newUser){
+		newUser.setUsername(StringEscapeUtils.escapeHtml4(newUser.getUsername()));
 		List<User> users = UserMapper.findUser(newUser);
 		int state = 0;
 		if(users.size() == 0){

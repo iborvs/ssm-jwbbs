@@ -214,7 +214,7 @@ public class TopicController {
             //正则表达式的匹配一定要是这样，单个替换\r|\n的时候会错误
             Matcher matcher=pattern.matcher(ans.getContent());
             String content=matcher.replaceAll("<br>");
-            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" }");
+            writer.println("{ \"topicname\" : \""+ans.getTopicname()+"\",\"owner\": \""+ans.getOwner()+"\" , \"starttime\" : \" "+ans.getStarttime() + "\" , \"lasttime\" : \" "+ans.getLasttime()+"\" , \"topicid\" : \""+ans.getTopicid()+"\" , \"content\" : \" "+content+"\" ,\"comments\":\""+ans.getComments()+"\"}");
         }
         writer.println("]");
     }

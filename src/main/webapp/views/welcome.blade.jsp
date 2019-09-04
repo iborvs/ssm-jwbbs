@@ -29,6 +29,9 @@
         case "1":
             errorInfo += "权限不足";
             break;
+        case "2":
+            errorInfo += "被封禁";
+            break;
     }
     $("#error_info").html(errorInfo);
     redirect();
