@@ -50,16 +50,16 @@
                                 </form>
                                 <form action="/user" method="POST" enctype="application/x-www-form-urlencoded" id="userinfo-form">
                                     <div class="row">
-                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3 col-xs-8 col-xs-offset-3">
                                                 <label for="nickname">昵称:</label>  <span id="nickname"></span>
                                         </div>
-                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3 col-xs-8 col-xs-offset-3">
                                             <label for="qq">qq:</label>  <span id="qq"></span>
                                         </div>
-                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3 col-xs-8 col-xs-offset-3">
                                             <label for="email">email:</label>  <span id="email"></span>
                                         </div>
-                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3">
+                                        <div class="col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-3 col-xs-8 col-xs-offset-3">
                                             <label for="privileges">用户状态:</label>  <span id="privileges"></span>
                                         </div>
                                         <div class="mx-auto" id="editInfoArea" style="display: none">

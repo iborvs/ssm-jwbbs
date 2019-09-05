@@ -66,7 +66,7 @@
 </div>
 <script>
     getInfo();
-    $.session.get('user');
+    $.session.get('luser');
     function pageReload() {
         location.reload();
     }
@@ -92,8 +92,7 @@
             '${pageContext.request.contextPath}/getuserinfo.action',
             $("#userinfo-form").serialize(),
             function(response,status,xhr){
-                if(response!=null){
-                    if( true ){
+                    if(response!=null){
                         response=response.replace(/[\r\n]/g,"")
                         response = response.replace(/\s*/g,"");
                         var json=$.parseJSON(response);
@@ -105,7 +104,6 @@
                     else {
                         alert("获取数据失败，请检查网络");
                     }
-                }
             }
         );
     }
